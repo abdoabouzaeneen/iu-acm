@@ -244,7 +244,7 @@
       50% { transform: scale(1.35); opacity: 0.4; }
     }
 
-    /* Hero Title with Typing Cursor */
+    /* Hero Title with Typing Cursor Fix for Mobile */
     .hero-title {
       font-size: 3.6rem;
       font-weight: 800;
@@ -252,26 +252,29 @@
       margin-bottom: 22px;
       letter-spacing: -1px;
       min-height: 4.2rem;
-      display: flex;
-      align-items: center;
-      flex-wrap: wrap;
     }
 
     .typing-text {
       background: linear-gradient(180deg, #ffffff 50%, #94a3b8 100%);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
+      display: inline;
+    }
+
+    .cursor-wrapper {
+      display: inline-block;
+      white-space: nowrap;
     }
 
     .typing-cursor {
       display: inline-block;
       width: 4px;
-      height: 1em;
+      height: 0.95em;
       background-color: var(--emerald-glow);
-      margin-left: 6px;
+      margin-left: 4px;
       box-shadow: 0 0 14px var(--emerald-glow);
       animation: blinkCursor 0.9s cubic-bezier(0.4, 0, 0.2, 1) infinite;
-      vertical-align: middle;
+      vertical-align: text-bottom;
       border-radius: 2px;
     }
 
@@ -347,7 +350,7 @@
       height: 100%;
       outline: none;
       cursor: pointer;
-      touch-action: none;
+      /* Removed touch-action: none to allow smooth scrolling */
     }
 
     /* Section Title */
@@ -525,9 +528,9 @@
           Official Student Chapter
         </div>
 
-        <!-- Animated Typing Title -->
+        <!-- Animated Typing Title (Fixed for Mobile Wrapping) -->
         <h1 class="hero-title">
-          <span class="typing-text" id="typing-heading"></span><span class="typing-cursor"></span>
+          <span class="typing-text" id="typing-heading"></span><span class="cursor-wrapper"><span id="last-char"></span><span class="typing-cursor"></span></span>
         </h1>
 
         <p class="hero-desc">
@@ -644,17 +647,25 @@
     </div>
   </footer>
 
-  <!-- Repeating 15s Typewriter Animation -->
+  <!-- Typing Animation (Mobile Fixed) -->
   <script>
     const fullText = "IU ACM Student Chapter";
-    const targetEl = document.getElementById("typing-heading");
+    const mainTextEl = document.getElementById("typing-heading");
+    const lastCharEl = document.getElementById("last-char");
 
     function typeWriterCycle() {
       let charIndex = 0;
 
       function typeChar() {
         if (charIndex <= fullText.length) {
-          targetEl.textContent = fullText.slice(0, charIndex);
+          // Separate the last character from the main string to keep it bundled with the cursor
+          if (charIndex > 0) {
+            mainTextEl.textContent = fullText.slice(0, charIndex - 1);
+            lastCharEl.textContent = fullText.charAt(charIndex - 1);
+          } else {
+            mainTextEl.textContent = "";
+            lastCharEl.textContent = "";
+          }
           charIndex++;
           setTimeout(typeChar, 70);
         } else {
@@ -665,7 +676,13 @@
       function backspaceChar() {
         if (charIndex > 0) {
           charIndex--;
-          targetEl.textContent = fullText.slice(0, charIndex);
+          if (charIndex > 0) {
+            mainTextEl.textContent = fullText.slice(0, charIndex - 1);
+            lastCharEl.textContent = fullText.charAt(charIndex - 1);
+          } else {
+            mainTextEl.textContent = "";
+            lastCharEl.textContent = "";
+          }
           setTimeout(backspaceChar, 30);
         } else {
           setTimeout(typeWriterCycle, 1200);
@@ -680,12 +697,13 @@
     });
   </script>
 
-  <!-- Complete Audio Engine: Server Rack Airflow + Robotic Voice -->
+  <!-- Complete Audio Engine (Global Unlocker + Voice Consistency) -->
   <script>
     let soundEnabled = true;
     let audioCtx = null;
     let visorRef = null;
     let isSpeaking = false;
+    let audioUnlocked = false;
 
     let ambientSource = null;
     let ambientGain = null;
@@ -701,6 +719,28 @@
       return audioCtx;
     }
 
+    // --- Global Audio Engine Unlocker (Fix for iOS/Android First Touch Block) ---
+    function unlockAudioEngines() {
+      if (audioUnlocked || !soundEnabled) return;
+      audioUnlocked = true;
+
+      getAudioContext().resume();
+      
+      // Fire a silent speech utterance to authorize Web Speech API instantly
+      if ('speechSynthesis' in window) {
+        const silentSpeech = new SpeechSynthesisUtterance("");
+        silentSpeech.volume = 0;
+        window.speechSynthesis.speak(silentSpeech);
+      }
+
+      document.removeEventListener('touchstart', unlockAudioEngines);
+      document.removeEventListener('click', unlockAudioEngines);
+    }
+
+    document.addEventListener('touchstart', unlockAudioEngines, { passive: true });
+    document.addEventListener('click', unlockAudioEngines);
+
+    // --- Procedural Airflow ---
     function createAirflowBuffer(ctx) {
       const bufferSize = ctx.sampleRate * 4;
       const buffer = ctx.createBuffer(1, bufferSize, ctx.sampleRate);
@@ -761,7 +801,8 @@
     soundBtn.addEventListener('click', () => {
       soundEnabled = !soundEnabled;
       if (soundEnabled) {
-        getAudioContext();
+        audioUnlocked = true;
+        getAudioContext().resume();
         soundIcon.textContent = '🔊';
         soundText.textContent = 'Sound: ON';
         startAirflowAmbience();
@@ -798,7 +839,6 @@
 
     function speakRoboticWelcome() {
       if (!soundEnabled || !('speechSynthesis' in window)) return;
-      
       window.speechSynthesis.cancel();
 
       const speechPhrase = "Welcome to I-U A-C-M Student Chapter. If you are creative, you are in the right place.";
@@ -807,9 +847,21 @@
       utterance.pitch = 0.22;
       utterance.rate = 0.88;
 
+      // Aggressive Voice Targeting for Consistency across Windows/Mac/iOS/Android
       const voices = window.speechSynthesis.getVoices();
-      const preferredVoice = voices.find(v => v.lang.startsWith('en') && (v.name.includes('David') || v.name.includes('Google') || v.name.includes('Natural') || v.name.includes('Male')));
-      if (preferredVoice) utterance.voice = preferredVoice;
+      const targetVoices = [
+        'Fred',                    // Mac/iOS (Deep Robotic)
+        'Zarvox',                  // Mac/iOS Alternate
+        'Google UK English Male',  // Android/Chrome
+        'Microsoft Mark',          // Windows
+        'Microsoft David',         // Windows Alternate
+        'Daniel',                  // iOS fallback
+        'Male'
+      ];
+      
+      let selectedVoice = voices.find(v => targetVoices.some(tv => v.name.includes(tv)));
+      if (!selectedVoice) selectedVoice = voices.find(v => v.lang.startsWith('en'));
+      if (selectedVoice) utterance.voice = selectedVoice;
 
       let pulseTimer = null;
       utterance.onstart = () => {
@@ -831,40 +883,9 @@
 
       window.speechSynthesis.speak(utterance);
     }
-
-    function handleInitialEntryWelcome() {
-      if (sessionStorage.getItem('iu_acm_initial_welcome_played')) return;
-      sessionStorage.setItem('iu_acm_initial_welcome_played', 'true');
-
-      startAirflowAmbience();
-      speakRoboticWelcome();
-
-      const gestureUnlock = () => {
-        getAudioContext();
-        startAirflowAmbience();
-        if (!window.speechSynthesis.speaking && !isSpeaking) {
-          speakRoboticWelcome();
-        }
-        window.removeEventListener('click', gestureUnlock);
-        window.removeEventListener('touchstart', gestureUnlock);
-        window.removeEventListener('scroll', gestureUnlock);
-      };
-
-      window.addEventListener('click', gestureUnlock, { once: true });
-      window.addEventListener('touchstart', gestureUnlock, { once: true });
-      window.addEventListener('scroll', gestureUnlock, { once: true });
-    }
-
-    window.addEventListener('DOMContentLoaded', () => {
-      if ('speechSynthesis' in window && speechSynthesis.getVoices().length === 0) {
-        speechSynthesis.addEventListener('voiceschanged', handleInitialEntryWelcome, { once: true });
-      } else {
-        setTimeout(handleInitialEntryWelcome, 500);
-      }
-    });
   </script>
 
-  <!-- Three.js 3D Cyber-Robot Simulation (Ultra-Smooth Damped Interpolation) -->
+  <!-- Three.js 3D Cyber-Robot Simulation -->
   <script>
     const canvas = document.getElementById('webgl-canvas');
     const wrapper = canvas.parentElement;
@@ -917,7 +938,6 @@
       opacity: 0.35
     });
 
-    // Robot Head
     const headGeo = new THREE.BoxGeometry(2.0, 1.7, 1.8);
     const head = new THREE.Mesh(headGeo, darkChassisMat);
     robot.add(head);
@@ -926,13 +946,11 @@
     headWire.scale.set(1.02, 1.02, 1.02);
     head.add(headWire);
 
-    // Visor
     const visorGeo = new THREE.BoxGeometry(1.6, 0.45, 0.4);
     const visor = new THREE.Mesh(visorGeo, glowingVisorMat);
     visor.position.set(0, 0.15, 0.85);
     head.add(visor);
 
-    // Side Cylinders & Antenna
     const earGeo = new THREE.CylinderGeometry(0.35, 0.35, 0.3, 16);
     const leftEar = new THREE.Mesh(earGeo, emeraldArmorMat);
     leftEar.rotation.z = Math.PI / 2;
@@ -951,7 +969,6 @@
     antennaBeacon.position.set(0, 1.4, 0);
     head.add(antennaBeacon);
 
-    // Floating Rings
     const ringGeo = new THREE.TorusGeometry(2.2, 0.08, 16, 64);
     const orbitalRing = new THREE.Mesh(ringGeo, emeraldArmorMat);
     orbitalRing.rotation.x = Math.PI / 3;
@@ -962,7 +979,6 @@
     outerRing.rotation.x = -Math.PI / 4;
     robot.add(outerRing);
 
-    // Floating Nodes
     const nodeGeo = new THREE.OctahedronGeometry(0.4);
     const sat1 = new THREE.Mesh(nodeGeo, emeraldArmorMat);
     sat1.position.set(2.4, 1.6, -0.5);
@@ -972,7 +988,6 @@
     sat2.position.set(-2.5, -1.2, 0.5);
     robot.add(sat2);
 
-    // Highly responsive, fluid inertial mouse interpolation
     let mouseX = 0, mouseY = 0;
     let targetX = 0, targetY = 0;
 
@@ -989,15 +1004,23 @@
       targetY = 0;
     });
 
+    // Touch / Click on Robot (Fixed missing e.preventDefault() allowing scrolling)
     function onRobotTouched(e) {
-      e.preventDefault();
-      getAudioContext();
+      // Force unlock if not already done
+      if (!audioUnlocked && soundEnabled) {
+        unlockAudioEngines();
+      }
+      
       startAirflowAmbience();
-      speakRoboticWelcome();
+      
+      if(!isSpeaking) {
+        speakRoboticWelcome();
+      }
     }
 
     canvas.addEventListener('click', onRobotTouched);
-    canvas.addEventListener('touchstart', onRobotTouched, { passive: false });
+    // Added { passive: true } so swiping down the page over the canvas isn't blocked
+    canvas.addEventListener('touchstart', onRobotTouched, { passive: true });
 
     window.addEventListener('resize', () => {
       const width = wrapper.clientWidth;
@@ -1013,7 +1036,6 @@
       requestAnimationFrame(animate);
       const elapsedTime = clock.getElapsedTime();
 
-      // Fluid LERP damping for seamless floating physics
       mouseX += (targetX - mouseX) * 0.028;
       mouseY += (targetY - mouseY) * 0.028;
 

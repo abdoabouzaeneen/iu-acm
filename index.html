@@ -1,0 +1,1043 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>IU ACM Student Chapter</title>
+  
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@500;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  
+  <!-- Three.js for 3D Cyber-Robot -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+
+  <style>
+    :root {
+      --bg-dark: #040805;
+      --emerald-glow: #10b981;
+      --emerald-accent: #059669;
+      --text-main: #f8fafc;
+      --text-muted: #94a3b8;
+      --card-bg: rgba(10, 24, 16, 0.45);
+      --card-border: rgba(16, 185, 129, 0.18);
+      --card-hover-border: rgba(16, 185, 129, 0.55);
+      --ease-smooth: cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      background: var(--bg-dark);
+      background-image: radial-gradient(circle at 75% 25%, #0a2615 0%, #030805 60%, #010402 100%);
+      background-attachment: fixed;
+      color: var(--text-main);
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      min-height: 100vh;
+      line-height: 1.65;
+      overflow-x: hidden;
+      text-rendering: optimizeLegibility;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .bg-grid {
+      position: fixed;
+      top: 0; left: 0; width: 100vw; height: 100vh;
+      background: 
+        radial-gradient(rgba(16, 185, 129, 0.05) 1.5px, transparent 1.5px),
+        linear-gradient(to right, rgba(255, 255, 255, 0.015) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(255, 255, 255, 0.015) 1px, transparent 1px);
+      background-size: 32px 32px, 80px 80px, 80px 80px;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .container {
+      max-width: 1280px;
+      margin: 0 auto;
+      padding: 0 28px;
+      position: relative;
+      z-index: 2;
+    }
+
+    /* Navbar */
+    header {
+      padding: 22px 0;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      position: sticky;
+      top: 0;
+      z-index: 20;
+      transition: background 0.3s ease;
+    }
+
+    .nav-wrapper {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .brand-group {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      text-decoration: none;
+      transition: opacity 0.25s ease;
+    }
+
+    .brand-group:hover {
+      opacity: 0.88;
+    }
+
+    .logo-badge {
+      font-family: 'Fira Code', monospace;
+      font-weight: 700;
+      font-size: 1.45rem;
+      color: #ffffff;
+      text-shadow: 0 0 20px rgba(255, 255, 255, 0.6), 0 0 10px rgba(16, 185, 129, 0.9);
+      letter-spacing: -1px;
+    }
+
+    .brand-divider {
+      width: 1px;
+      height: 22px;
+      background: rgba(255, 255, 255, 0.15);
+    }
+
+    .brand-title {
+      font-size: 0.95rem;
+      font-weight: 700;
+      letter-spacing: 0.8px;
+      color: var(--text-main);
+    }
+
+    .nav-right {
+      display: flex;
+      align-items: center;
+      gap: 24px;
+    }
+
+    .nav-links a {
+      color: var(--text-muted);
+      text-decoration: none;
+      margin-left: 22px;
+      font-weight: 600;
+      font-size: 0.92rem;
+      transition: color 0.3s var(--ease-smooth);
+    }
+
+    .nav-links a:hover {
+      color: var(--emerald-glow);
+    }
+
+    /* Sound Toggle */
+    .sound-toggle-btn {
+      background: rgba(16, 185, 129, 0.08);
+      border: 1px solid rgba(16, 185, 129, 0.3);
+      color: var(--emerald-glow);
+      font-family: 'Fira Code', monospace;
+      font-size: 0.8rem;
+      padding: 7px 16px;
+      border-radius: 999px;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      transition: all 0.3s var(--ease-smooth);
+      will-change: transform, background-color;
+    }
+
+    .sound-toggle-btn:hover {
+      background: rgba(16, 185, 129, 0.2);
+      border-color: var(--emerald-glow);
+      transform: translateY(-1px);
+    }
+
+    /* Hero Section */
+    .hero-split {
+      display: grid;
+      grid-template-columns: 1.15fr 0.85fr;
+      align-items: center;
+      min-height: calc(88vh - 80px);
+      padding: 40px 0 60px;
+      gap: 20px;
+      position: relative;
+    }
+
+    .hero-content {
+      z-index: 3;
+    }
+
+    .hero-logo-box {
+      width: 120px;
+      height: 120px;
+      margin-bottom: 28px;
+      background: radial-gradient(circle, #0e3820 0%, #030e07 100%);
+      border: 1px solid var(--card-border);
+      border-radius: 26px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 20px 50px rgba(16, 185, 129, 0.25), 0 0 25px rgba(16, 185, 129, 0.18) inset;
+      animation: floatLogo 5s ease-in-out infinite;
+      will-change: transform, box-shadow;
+      transform: translateZ(0);
+    }
+
+    .hero-logo-box span {
+      font-family: 'Fira Code', monospace;
+      font-size: 2.1rem;
+      font-weight: 700;
+      color: #ffffff;
+      letter-spacing: -1px;
+      text-shadow: 0 2px 12px rgba(0, 0, 0, 0.6), 0 0 15px rgba(255, 255, 255, 0.4);
+    }
+
+    @keyframes floatLogo {
+      0%, 100% {
+        transform: translateY(0) translateZ(0);
+        box-shadow: 0 20px 50px rgba(16, 185, 129, 0.25), 0 0 25px rgba(16, 185, 129, 0.18) inset;
+      }
+      50% {
+        transform: translateY(-10px) translateZ(0);
+        box-shadow: 0 30px 60px rgba(16, 185, 129, 0.4), 0 0 30px rgba(16, 185, 129, 0.25) inset;
+      }
+    }
+
+    .chapter-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-family: 'Fira Code', monospace;
+      font-size: 0.82rem;
+      color: var(--emerald-glow);
+      background: rgba(16, 185, 129, 0.08);
+      border: 1px solid rgba(16, 185, 129, 0.28);
+      padding: 6px 15px;
+      border-radius: 999px;
+      margin-bottom: 20px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    .tag-dot {
+      width: 7px;
+      height: 7px;
+      background: var(--emerald-glow);
+      border-radius: 50%;
+      box-shadow: 0 0 8px var(--emerald-glow);
+      animation: pulse 2.2s infinite ease-in-out;
+    }
+
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); opacity: 0.9; }
+      50% { transform: scale(1.35); opacity: 0.4; }
+    }
+
+    /* Hero Title with Typing Cursor */
+    .hero-title {
+      font-size: 3.6rem;
+      font-weight: 800;
+      line-height: 1.12;
+      margin-bottom: 22px;
+      letter-spacing: -1px;
+      min-height: 4.2rem;
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
+    .typing-text {
+      background: linear-gradient(180deg, #ffffff 50%, #94a3b8 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .typing-cursor {
+      display: inline-block;
+      width: 4px;
+      height: 1em;
+      background-color: var(--emerald-glow);
+      margin-left: 6px;
+      box-shadow: 0 0 14px var(--emerald-glow);
+      animation: blinkCursor 0.9s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+      vertical-align: middle;
+      border-radius: 2px;
+    }
+
+    @keyframes blinkCursor {
+      0%, 49% { opacity: 1; }
+      50%, 100% { opacity: 0; }
+    }
+
+    .hero-desc {
+      font-size: 1.12rem;
+      color: var(--text-muted);
+      max-width: 600px;
+      margin-bottom: 34px;
+      line-height: 1.75;
+    }
+
+    .btn-group {
+      display: flex;
+      gap: 16px;
+      align-items: center;
+    }
+
+    .btn {
+      padding: 13px 30px;
+      border-radius: 12px;
+      font-weight: 600;
+      font-size: 0.95rem;
+      cursor: pointer;
+      text-decoration: none;
+      transition: transform 0.3s var(--ease-smooth), box-shadow 0.3s var(--ease-smooth), background-color 0.3s ease;
+      display: inline-flex;
+      align-items: center;
+      will-change: transform;
+    }
+
+    .btn-primary {
+      background: var(--emerald-glow);
+      color: #02140b;
+      box-shadow: 0 0 25px rgba(16, 185, 129, 0.35);
+      border: none;
+    }
+
+    .btn-primary:hover {
+      background: #34d399;
+      transform: translateY(-2px);
+      box-shadow: 0 0 35px rgba(16, 185, 129, 0.55);
+    }
+
+    .btn-secondary {
+      background: rgba(255, 255, 255, 0.03);
+      color: var(--text-main);
+      border: 1px solid var(--card-border);
+    }
+
+    .btn-secondary:hover {
+      background: rgba(255, 255, 255, 0.08);
+      border-color: rgba(255, 255, 255, 0.25);
+      transform: translateY(-1px);
+    }
+
+    /* 3D Robot Container */
+    .hero-3d-wrapper {
+      position: relative;
+      width: 100%;
+      height: 520px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    #webgl-canvas {
+      width: 100%;
+      height: 100%;
+      outline: none;
+      cursor: pointer;
+      touch-action: none;
+    }
+
+    /* Section Title */
+    .section-title {
+      text-align: center;
+      font-size: 2.3rem;
+      font-weight: 700;
+      margin: 90px 0 48px;
+      color: #fff;
+    }
+
+    .section-title span {
+      color: var(--emerald-glow);
+    }
+
+    /* Teams Grid */
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: 26px;
+      margin-bottom: 110px;
+    }
+
+    .team-card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 20px;
+      padding: 32px;
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      transition: transform 0.4s var(--ease-smooth), border-color 0.4s var(--ease-smooth), background-color 0.4s ease, box-shadow 0.4s ease;
+      display: flex;
+      flex-direction: column;
+      position: relative;
+      overflow: hidden;
+      will-change: transform;
+      transform: translateZ(0);
+    }
+
+    .team-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0; height: 3px;
+      background: linear-gradient(90deg, transparent, var(--emerald-glow), transparent);
+      opacity: 0;
+      transition: opacity 0.4s var(--ease-smooth);
+    }
+
+    .team-card:hover {
+      border-color: var(--card-hover-border);
+      background: rgba(12, 28, 19, 0.75);
+      transform: translateY(-6px) translateZ(0);
+      box-shadow: 0 16px 36px rgba(0, 0, 0, 0.35);
+    }
+
+    .team-card:hover::before {
+      opacity: 1;
+    }
+
+    .team-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 18px;
+    }
+
+    .team-code {
+      font-family: 'Fira Code', monospace;
+      font-size: 0.92rem;
+      color: var(--emerald-glow);
+      background: rgba(16, 185, 129, 0.08);
+      padding: 4px 10px;
+      border-radius: 6px;
+      border: 1px solid rgba(16, 185, 129, 0.25);
+    }
+
+    .team-card h3 {
+      font-size: 1.35rem;
+      margin-bottom: 10px;
+      color: #fff;
+    }
+
+    .team-card p {
+      font-size: 0.94rem;
+      color: var(--text-muted);
+      line-height: 1.65;
+      margin-bottom: 20px;
+      flex-grow: 1;
+    }
+
+    .highlights {
+      list-style: none;
+      border-top: 1px solid rgba(255, 255, 255, 0.07);
+      padding-top: 16px;
+    }
+
+    .highlights li {
+      font-size: 0.86rem;
+      color: #cbd5e1;
+      margin-bottom: 8px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .highlights li::before {
+      content: "›";
+      color: var(--emerald-glow);
+      font-weight: bold;
+      font-size: 1.15rem;
+      line-height: 1;
+    }
+
+    /* Footer */
+    footer {
+      border-top: 1px solid rgba(255, 255, 255, 0.06);
+      padding: 45px 0;
+      text-align: center;
+      color: var(--text-muted);
+      font-size: 0.9rem;
+    }
+
+    @media (max-width: 992px) {
+      .hero-split {
+        grid-template-columns: 1fr;
+        text-align: center;
+        padding-top: 50px;
+      }
+      .hero-logo-box { margin: 0 auto 28px; }
+      .hero-title { justify-content: center; }
+      .hero-desc { margin: 0 auto 34px; }
+      .btn-group { justify-content: center; }
+      .hero-3d-wrapper { height: 400px; }
+      .hero-title { font-size: 2.8rem; }
+      .nav-links { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="bg-grid"></div>
+
+  <!-- Header -->
+  <header>
+    <div class="container nav-wrapper">
+      <a href="#" class="brand-group">
+        <div class="logo-badge">&lt;acm&gt;</div>
+        <div class="brand-divider"></div>
+        <div class="brand-title">IU ACM STUDENT CHAPTER</div>
+      </a>
+      <div class="nav-right">
+        <button id="sound-btn" class="sound-toggle-btn" title="Toggle Sound FX">
+          <span id="sound-icon">🔊</span>
+          <span id="sound-text">Sound: ON</span>
+        </button>
+        <nav class="nav-links">
+          <a href="#teams">Teams</a>
+          <a href="#about">About</a>
+          <a href="#join">Get Involved</a>
+        </nav>
+      </div>
+    </div>
+  </header>
+
+  <main class="container">
+    <!-- Hero Section -->
+    <section class="hero-split" id="about">
+      <div class="hero-content">
+        <div class="hero-logo-box">
+          <span>&lt;acm&gt;</span>
+        </div>
+
+        <div class="chapter-tag">
+          <div class="tag-dot"></div>
+          Official Student Chapter
+        </div>
+
+        <!-- Animated Typing Title -->
+        <h1 class="hero-title">
+          <span class="typing-text" id="typing-heading"></span><span class="typing-cursor"></span>
+        </h1>
+
+        <p class="hero-desc">
+          Welcome to the official website of the Islamic University of Madinah ACM Student Chapter:
+          A community of passionate Computer Science and Engineering students, driven by curiosity,
+          code, and cutting-edge technology. We welcome students of all backgrounds, interests, and 
+          skill levels to join our community and share our love for technology.
+        </p>
+        <div class="btn-group">
+          <a href="#teams" class="btn btn-primary">Explore Our Teams</a>
+          <a href="#join" class="btn btn-secondary">Join Community</a>
+        </div>
+      </div>
+
+      <!-- 3D Interactive Cyber-Robot Canvas -->
+      <div class="hero-3d-wrapper">
+        <canvas id="webgl-canvas"></canvas>
+      </div>
+    </section>
+
+    <!-- Chapter Teams Section -->
+    <h2 class="section-title" id="teams">Chapter <span>Teams</span></h2>
+
+    <div class="grid">
+      <!-- 1. CP Team -->
+      <div class="team-card">
+        <div class="team-header">
+          <span class="team-code">&lt;CP_Team /&gt;</span>
+        </div>
+        <h3>Competitive Programming</h3>
+        <p>Mastering algorithms, data structures, and rigorous problem-solving to excel in collegiate contests and competitive coding platforms.</p>
+        <ul class="highlights">
+          <li>Weekly algorithmic problem-solving sessions</li>
+          <li>Contest simulations & peer code coaching</li>
+          <li>ICPC & collegiate competition tracks</li>
+        </ul>
+      </div>
+
+      <!-- 2. AI Team -->
+      <div class="team-card">
+        <div class="team-header">
+          <span class="team-code">&lt;AI_Team /&gt;</span>
+        </div>
+        <h3>Artificial Intelligence</h3>
+        <p>Exploring machine learning theory, modern deep learning architectures, and collaborative data science projects.</p>
+        <ul class="highlights">
+          <li>Applied ML/DL workshops and seminars</li>
+          <li>Research paper analysis & discussions</li>
+          <li>Hackathons & benchmark challenges</li>
+        </ul>
+      </div>
+
+      <!-- 3. Robotics Team -->
+      <div class="team-card">
+        <div class="team-header">
+          <span class="team-code">&lt;Robotics_Team /&gt;</span>
+        </div>
+        <h3>Robotics</h3>
+        <p>Bridging software logic with physical systems through microcontrollers, sensor arrays, and embedded hardware development.</p>
+        <ul class="highlights">
+          <li>Microcontroller labs (ESP32, Arduino, Raspberry Pi)</li>
+          <li>Sensor integration and motor control circuits</li>
+          <li>Hardware prototyping for engineering challenges</li>
+        </ul>
+      </div>
+
+      <!-- 4. Design Team -->
+      <div class="team-card">
+        <div class="team-header">
+          <span class="team-code">&lt;Design_Team /&gt;</span>
+        </div>
+        <h3>Design</h3>
+        <p>Developing chapter visual identity guidelines, event branding materials, and digital UI/UX wireframes.</p>
+        <ul class="highlights">
+          <li>Brand guidelines and promotional asset creation</li>
+          <li>Event poster design and creative typography</li>
+          <li>UI/UX design for chapter platforms</li>
+        </ul>
+      </div>
+
+      <!-- 5. Media Team -->
+      <div class="team-card">
+        <div class="team-header">
+          <span class="team-code">&lt;Media_Team /&gt;</span>
+        </div>
+        <h3>Media</h3>
+        <p>Documenting activities through photography, video production, technical recaps, and digital outreach.</p>
+        <ul class="highlights">
+          <li>Event photography and post-production video</li>
+          <li>Digital content curation and semester archives</li>
+          <li>Community outreach and announcements</li>
+        </ul>
+      </div>
+
+      <!-- 6. Logistics Team -->
+      <div class="team-card">
+        <div class="team-header">
+          <span class="team-code">&lt;Logistics_Team /&gt;</span>
+        </div>
+        <h3>Logistics & Operations</h3>
+        <p>Coordinating campus event logistics, lab setups, auditorium bookings, and attendee check-ins.</p>
+        <ul class="highlights">
+          <li>Lab and campus venue reservations</li>
+          <li>Event check-in and attendance management</li>
+          <li>Operational workflows and equipment setups</li>
+        </ul>
+      </div>
+    </div>
+  </main>
+
+  <footer id="join">
+    <div class="container">
+      <p>© 2026 IU ACM Student Chapter. All rights reserved.</p>
+    </div>
+  </footer>
+
+  <!-- Repeating 15s Typewriter Animation -->
+  <script>
+    const fullText = "IU ACM Student Chapter";
+    const targetEl = document.getElementById("typing-heading");
+
+    function typeWriterCycle() {
+      let charIndex = 0;
+
+      function typeChar() {
+        if (charIndex <= fullText.length) {
+          targetEl.textContent = fullText.slice(0, charIndex);
+          charIndex++;
+          setTimeout(typeChar, 70);
+        } else {
+          setTimeout(backspaceChar, 11500);
+        }
+      }
+
+      function backspaceChar() {
+        if (charIndex > 0) {
+          charIndex--;
+          targetEl.textContent = fullText.slice(0, charIndex);
+          setTimeout(backspaceChar, 30);
+        } else {
+          setTimeout(typeWriterCycle, 1200);
+        }
+      }
+
+      typeChar();
+    }
+
+    window.addEventListener("DOMContentLoaded", () => {
+      setTimeout(typeWriterCycle, 300);
+    });
+  </script>
+
+  <!-- Complete Audio Engine: Server Rack Airflow + Robotic Voice -->
+  <script>
+    let soundEnabled = true;
+    let audioCtx = null;
+    let visorRef = null;
+    let isSpeaking = false;
+
+    let ambientSource = null;
+    let ambientGain = null;
+
+    function getAudioContext() {
+      if (!audioCtx) {
+        const AudioCtx = window.AudioContext || window.webkitAudioContext;
+        audioCtx = new AudioCtx();
+      }
+      if (audioCtx.state === 'suspended') {
+        audioCtx.resume();
+      }
+      return audioCtx;
+    }
+
+    function createAirflowBuffer(ctx) {
+      const bufferSize = ctx.sampleRate * 4;
+      const buffer = ctx.createBuffer(1, bufferSize, ctx.sampleRate);
+      const data = buffer.getChannelData(0);
+      let lastOut = 0.0;
+
+      for (let i = 0; i < bufferSize; i++) {
+        const white = Math.random() * 2 - 1;
+        data[i] = (lastOut + (0.02 * white)) / 1.02;
+        lastOut = data[i];
+        data[i] *= 3.5;
+      }
+      return buffer;
+    }
+
+    function startAirflowAmbience() {
+      if (!soundEnabled || ambientSource) return;
+      const ctx = getAudioContext();
+
+      ambientSource = ctx.createBufferSource();
+      ambientSource.buffer = createAirflowBuffer(ctx);
+      ambientSource.loop = true;
+
+      const filter = ctx.createBiquadFilter();
+      filter.type = 'lowpass';
+      filter.frequency.setValueAtTime(380, ctx.currentTime);
+      filter.Q.setValueAtTime(1.0, ctx.currentTime);
+
+      ambientGain = ctx.createGain();
+      ambientGain.gain.setValueAtTime(0.001, ctx.currentTime);
+      ambientGain.gain.exponentialRampToValueAtTime(0.25, ctx.currentTime + 1.2);
+
+      ambientSource.connect(filter);
+      filter.connect(ambientGain);
+      ambientGain.connect(ctx.destination);
+
+      ambientSource.start();
+    }
+
+    function stopAirflowAmbience() {
+      if (ambientGain && audioCtx) {
+        ambientGain.gain.setTargetAtTime(0.0001, audioCtx.currentTime, 0.15);
+      }
+      setTimeout(() => {
+        if (ambientSource) {
+          try { ambientSource.stop(); } catch(e) {}
+          try { ambientSource.disconnect(); } catch(e) {}
+          ambientSource = null;
+          ambientGain = null;
+        }
+      }, 200);
+    }
+
+    const soundBtn = document.getElementById('sound-btn');
+    const soundIcon = document.getElementById('sound-icon');
+    const soundText = document.getElementById('sound-text');
+
+    soundBtn.addEventListener('click', () => {
+      soundEnabled = !soundEnabled;
+      if (soundEnabled) {
+        getAudioContext();
+        soundIcon.textContent = '🔊';
+        soundText.textContent = 'Sound: ON';
+        startAirflowAmbience();
+        speakRoboticWelcome();
+      } else {
+        if ('speechSynthesis' in window) {
+          window.speechSynthesis.cancel();
+        }
+        stopAirflowAmbience();
+        soundIcon.textContent = '🔇';
+        soundText.textContent = 'Sound: OFF';
+      }
+    });
+
+    function playSciFiChime() {
+      const ctx = getAudioContext();
+      const ctxNow = ctx.currentTime;
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+
+      osc.type = 'sawtooth';
+      osc.frequency.setValueAtTime(320, ctxNow);
+      osc.frequency.exponentialRampToValueAtTime(960, ctxNow + 0.18);
+
+      gain.gain.setValueAtTime(0.08, ctxNow);
+      gain.gain.exponentialRampToValueAtTime(0.001, ctxNow + 0.22);
+
+      osc.connect(gain);
+      gain.connect(ctx.destination);
+
+      osc.start(ctxNow);
+      osc.stop(ctxNow + 0.23);
+    }
+
+    function speakRoboticWelcome() {
+      if (!soundEnabled || !('speechSynthesis' in window)) return;
+      
+      window.speechSynthesis.cancel();
+
+      const speechPhrase = "Welcome to I-U A-C-M Student Chapter. If you are creative, you are in the right place.";
+      const utterance = new SpeechSynthesisUtterance(speechPhrase);
+      
+      utterance.pitch = 0.22;
+      utterance.rate = 0.88;
+
+      const voices = window.speechSynthesis.getVoices();
+      const preferredVoice = voices.find(v => v.lang.startsWith('en') && (v.name.includes('David') || v.name.includes('Google') || v.name.includes('Natural') || v.name.includes('Male')));
+      if (preferredVoice) utterance.voice = preferredVoice;
+
+      let pulseTimer = null;
+      utterance.onstart = () => {
+        isSpeaking = true;
+        playSciFiChime();
+        if (visorRef) {
+          pulseTimer = setInterval(() => {
+            const cur = visorRef.color.getHex();
+            visorRef.color.setHex(cur === 0x34d399 ? 0xffffff : 0x34d399);
+          }, 90);
+        }
+      };
+
+      utterance.onend = utterance.onerror = () => {
+        isSpeaking = false;
+        if (pulseTimer) clearInterval(pulseTimer);
+        if (visorRef) visorRef.color.setHex(0x34d399);
+      };
+
+      window.speechSynthesis.speak(utterance);
+    }
+
+    function handleInitialEntryWelcome() {
+      if (sessionStorage.getItem('iu_acm_initial_welcome_played')) return;
+      sessionStorage.setItem('iu_acm_initial_welcome_played', 'true');
+
+      startAirflowAmbience();
+      speakRoboticWelcome();
+
+      const gestureUnlock = () => {
+        getAudioContext();
+        startAirflowAmbience();
+        if (!window.speechSynthesis.speaking && !isSpeaking) {
+          speakRoboticWelcome();
+        }
+        window.removeEventListener('click', gestureUnlock);
+        window.removeEventListener('touchstart', gestureUnlock);
+        window.removeEventListener('scroll', gestureUnlock);
+      };
+
+      window.addEventListener('click', gestureUnlock, { once: true });
+      window.addEventListener('touchstart', gestureUnlock, { once: true });
+      window.addEventListener('scroll', gestureUnlock, { once: true });
+    }
+
+    window.addEventListener('DOMContentLoaded', () => {
+      if ('speechSynthesis' in window && speechSynthesis.getVoices().length === 0) {
+        speechSynthesis.addEventListener('voiceschanged', handleInitialEntryWelcome, { once: true });
+      } else {
+        setTimeout(handleInitialEntryWelcome, 500);
+      }
+    });
+  </script>
+
+  <!-- Three.js 3D Cyber-Robot Simulation (Ultra-Smooth Damped Interpolation) -->
+  <script>
+    const canvas = document.getElementById('webgl-canvas');
+    const wrapper = canvas.parentElement;
+
+    const scene = new THREE.Scene();
+    const camera = new THREE.PerspectiveCamera(45, wrapper.clientWidth / wrapper.clientHeight, 0.1, 1000);
+    camera.position.set(0, 0.5, 9);
+
+    const renderer = new THREE.WebGLRenderer({ canvas: canvas, alpha: true, antialias: true, powerPreference: "high-performance" });
+    renderer.setSize(wrapper.clientWidth, wrapper.clientHeight);
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+
+    const ambientLight = new THREE.AmbientLight(0xffffff, 0.55);
+    scene.add(ambientLight);
+
+    const emeraldLight = new THREE.PointLight(0x10b981, 4, 60);
+    emeraldLight.position.set(4, 5, 4);
+    scene.add(emeraldLight);
+
+    const rimLight = new THREE.PointLight(0x34d399, 2.5, 50);
+    rimLight.position.set(-5, -3, -3);
+    scene.add(rimLight);
+
+    const robot = new THREE.Group();
+    scene.add(robot);
+
+    const darkChassisMat = new THREE.MeshStandardMaterial({
+      color: 0x09140d,
+      metalness: 0.85,
+      roughness: 0.25,
+      flatShading: true
+    });
+
+    const emeraldArmorMat = new THREE.MeshStandardMaterial({
+      color: 0x044327,
+      metalness: 0.75,
+      roughness: 0.3,
+      flatShading: true
+    });
+
+    const glowingVisorMat = new THREE.MeshBasicMaterial({
+      color: 0x34d399
+    });
+    visorRef = glowingVisorMat;
+
+    const wireMat = new THREE.MeshBasicMaterial({
+      color: 0x10b981,
+      wireframe: true,
+      transparent: true,
+      opacity: 0.35
+    });
+
+    // Robot Head
+    const headGeo = new THREE.BoxGeometry(2.0, 1.7, 1.8);
+    const head = new THREE.Mesh(headGeo, darkChassisMat);
+    robot.add(head);
+
+    const headWire = new THREE.Mesh(headGeo, wireMat);
+    headWire.scale.set(1.02, 1.02, 1.02);
+    head.add(headWire);
+
+    // Visor
+    const visorGeo = new THREE.BoxGeometry(1.6, 0.45, 0.4);
+    const visor = new THREE.Mesh(visorGeo, glowingVisorMat);
+    visor.position.set(0, 0.15, 0.85);
+    head.add(visor);
+
+    // Side Cylinders & Antenna
+    const earGeo = new THREE.CylinderGeometry(0.35, 0.35, 0.3, 16);
+    const leftEar = new THREE.Mesh(earGeo, emeraldArmorMat);
+    leftEar.rotation.z = Math.PI / 2;
+    leftEar.position.set(-1.1, 0.15, 0);
+    head.add(leftEar);
+
+    const rightEar = leftEar.clone();
+    rightEar.position.x = 1.1;
+    head.add(rightEar);
+
+    const antennaStem = new THREE.Mesh(new THREE.CylinderGeometry(0.05, 0.05, 0.6, 8), darkChassisMat);
+    antennaStem.position.set(0, 1.1, 0);
+    head.add(antennaStem);
+
+    const antennaBeacon = new THREE.Mesh(new THREE.SphereGeometry(0.16, 16, 16), glowingVisorMat);
+    antennaBeacon.position.set(0, 1.4, 0);
+    head.add(antennaBeacon);
+
+    // Floating Rings
+    const ringGeo = new THREE.TorusGeometry(2.2, 0.08, 16, 64);
+    const orbitalRing = new THREE.Mesh(ringGeo, emeraldArmorMat);
+    orbitalRing.rotation.x = Math.PI / 3;
+    robot.add(orbitalRing);
+
+    const ringGeo2 = new THREE.TorusGeometry(2.8, 0.05, 16, 64);
+    const outerRing = new THREE.Mesh(ringGeo2, wireMat);
+    outerRing.rotation.x = -Math.PI / 4;
+    robot.add(outerRing);
+
+    // Floating Nodes
+    const nodeGeo = new THREE.OctahedronGeometry(0.4);
+    const sat1 = new THREE.Mesh(nodeGeo, emeraldArmorMat);
+    sat1.position.set(2.4, 1.6, -0.5);
+    robot.add(sat1);
+
+    const sat2 = new THREE.Mesh(nodeGeo, darkChassisMat);
+    sat2.position.set(-2.5, -1.2, 0.5);
+    robot.add(sat2);
+
+    // Highly responsive, fluid inertial mouse interpolation
+    let mouseX = 0, mouseY = 0;
+    let targetX = 0, targetY = 0;
+
+    window.addEventListener('mousemove', (e) => {
+      const rect = canvas.getBoundingClientRect();
+      const x = e.clientX - rect.left - rect.width / 2;
+      const y = e.clientY - rect.top - rect.height / 2;
+      targetX = (x / rect.width) * 0.85;
+      targetY = (y / rect.height) * 0.85;
+    });
+
+    window.addEventListener('mouseleave', () => {
+      targetX = 0;
+      targetY = 0;
+    });
+
+    function onRobotTouched(e) {
+      e.preventDefault();
+      getAudioContext();
+      startAirflowAmbience();
+      speakRoboticWelcome();
+    }
+
+    canvas.addEventListener('click', onRobotTouched);
+    canvas.addEventListener('touchstart', onRobotTouched, { passive: false });
+
+    window.addEventListener('resize', () => {
+      const width = wrapper.clientWidth;
+      const height = wrapper.clientHeight;
+      camera.aspect = width / height;
+      camera.updateProjectionMatrix();
+      renderer.setSize(width, height);
+    });
+
+    let clock = new THREE.Clock();
+
+    function animate() {
+      requestAnimationFrame(animate);
+      const elapsedTime = clock.getElapsedTime();
+
+      // Fluid LERP damping for seamless floating physics
+      mouseX += (targetX - mouseX) * 0.028;
+      mouseY += (targetY - mouseY) * 0.028;
+
+      head.rotation.y = mouseX * 1.1 + Math.sin(elapsedTime * 0.75) * 0.06;
+      head.rotation.x = mouseY * 0.75 + Math.cos(elapsedTime * 0.85) * 0.04;
+
+      robot.position.y = Math.sin(elapsedTime * 1.3) * 0.18;
+
+      orbitalRing.rotation.z = elapsedTime * 0.45;
+      orbitalRing.rotation.x = Math.PI / 3 + Math.sin(elapsedTime * 0.35) * 0.12;
+
+      outerRing.rotation.z = -elapsedTime * 0.3;
+      outerRing.rotation.y = elapsedTime * 0.22;
+
+      sat1.rotation.y = elapsedTime * 1.1;
+      sat1.position.y = 1.6 + Math.sin(elapsedTime * 1.8) * 0.14;
+
+      sat2.rotation.x = -elapsedTime * 1.1;
+      sat2.position.y = -1.2 + Math.cos(elapsedTime * 1.8) * 0.14;
+
+      renderer.render(scene, camera);
+    }
+
+    animate();
+  </script>
+</body>
+</html>

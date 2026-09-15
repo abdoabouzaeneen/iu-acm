@@ -8,21 +8,29 @@
   <!-- Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@500;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   
-  <!-- Three.js for 3D Cyber-Robot -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-
   <style>
     :root {
-      --bg-dark: #040805;
-      --emerald-glow: #10b981;
-      --emerald-accent: #059669;
-      --text-main: #f8fafc;
-      --text-muted: #94a3b8;
-      --card-bg: rgba(10, 24, 16, 0.45);
-      --card-border: rgba(16, 185, 129, 0.18);
-      --card-hover-border: rgba(16, 185, 129, 0.55);
+      /* Clean Enterprise Palette */
+      --bg-body: #f8fafc;
+      --bg-white: #ffffff;
+      --text-main: #0f172a;
+      --text-muted: #475569;
+      --border-light: #e2e8f0;
+      
+      /* ACM Logo Colors (Slate Blue & Academic Gold) */
+      --acm-blue: #2c5f85;
+      --acm-blue-dark: #1e4563;
+      --acm-blue-light: #eef6fc;
+      
+      --acm-gold: #c49b57;
+      --acm-gold-dark: #a68143;
+      --acm-gold-light: #fcf6ec;
+
+      --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+      --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+      --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
       --ease-smooth: cubic-bezier(0.16, 1, 0.3, 1);
     }
 
@@ -37,9 +45,7 @@
     }
 
     body {
-      background: var(--bg-dark);
-      background-image: radial-gradient(circle at 75% 25%, #0a2615 0%, #030805 60%, #010402 100%);
-      background-attachment: fixed;
+      background-color: var(--bg-body);
       color: var(--text-main);
       font-family: 'Plus Jakarta Sans', sans-serif;
       min-height: 100vh;
@@ -49,36 +55,36 @@
       -webkit-font-smoothing: antialiased;
     }
 
+    /* Subtle dot grid */
     .bg-grid {
-      position: fixed;
-      top: 0; left: 0; width: 100vw; height: 100vh;
-      background: 
-        radial-gradient(rgba(16, 185, 129, 0.05) 1.5px, transparent 1.5px),
-        linear-gradient(to right, rgba(255, 255, 255, 0.015) 1px, transparent 1px),
-        linear-gradient(to bottom, rgba(255, 255, 255, 0.015) 1px, transparent 1px);
-      background-size: 32px 32px, 80px 80px, 80px 80px;
+      position: absolute;
+      top: 0; left: 0; width: 100%; height: 800px;
+      background-image: radial-gradient(var(--border-light) 1px, transparent 1px);
+      background-size: 24px 24px;
       pointer-events: none;
       z-index: 0;
+      mask-image: linear-gradient(to bottom, rgba(0,0,0,1) 0%, rgba(0,0,0,0) 100%);
+      -webkit-mask-image: linear-gradient(to bottom, rgba(0,0,0,1) 0%, rgba(0,0,0,0) 100%);
     }
 
     .container {
-      max-width: 1280px;
+      max-width: 1200px;
       margin: 0 auto;
-      padding: 0 28px;
+      padding: 0 24px;
       position: relative;
       z-index: 2;
     }
 
     /* Navbar */
     header {
-      padding: 22px 0;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.06);
-      backdrop-filter: blur(16px);
-      -webkit-backdrop-filter: blur(16px);
+      background-color: rgba(255, 255, 255, 0.9);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border-light);
+      padding: 20px 0;
       position: sticky;
       top: 0;
       z-index: 20;
-      transition: background 0.3s ease;
     }
 
     .nav-wrapper {
@@ -90,28 +96,33 @@
     .brand-group {
       display: flex;
       align-items: center;
-      gap: 14px;
+      gap: 16px;
       text-decoration: none;
-      transition: opacity 0.25s ease;
-    }
-
-    .brand-group:hover {
-      opacity: 0.88;
     }
 
     .logo-badge {
-      font-family: 'Fira Code', monospace;
+      font-family: 'Plus Jakarta Sans', sans-serif;
       font-weight: 700;
-      font-size: 1.45rem;
-      color: #ffffff;
-      text-shadow: 0 0 20px rgba(255, 255, 255, 0.6), 0 0 10px rgba(16, 185, 129, 0.9);
-      letter-spacing: -1px;
+      font-size: 1.8rem;
+      letter-spacing: -0.5px;
+      display: flex;
+      align-items: center;
+    }
+
+    .logo-bracket {
+      color: var(--acm-blue);
+      font-weight: 500;
+    }
+
+    .logo-text {
+      color: var(--acm-gold);
+      margin: 0 2px;
     }
 
     .brand-divider {
       width: 1px;
-      height: 22px;
-      background: rgba(255, 255, 255, 0.15);
+      height: 24px;
+      background: var(--border-light);
     }
 
     .brand-title {
@@ -121,143 +132,69 @@
       color: var(--text-main);
     }
 
-    .nav-right {
-      display: flex;
-      align-items: center;
-      gap: 24px;
-    }
-
     .nav-links a {
       color: var(--text-muted);
       text-decoration: none;
-      margin-left: 22px;
+      margin-left: 28px;
       font-weight: 600;
-      font-size: 0.92rem;
-      transition: color 0.3s var(--ease-smooth);
+      font-size: 0.95rem;
+      transition: color 0.2s ease;
     }
 
     .nav-links a:hover {
-      color: var(--emerald-glow);
-    }
-
-    /* Sound Toggle */
-    .sound-toggle-btn {
-      background: rgba(16, 185, 129, 0.08);
-      border: 1px solid rgba(16, 185, 129, 0.3);
-      color: var(--emerald-glow);
-      font-family: 'Fira Code', monospace;
-      font-size: 0.8rem;
-      padding: 7px 16px;
-      border-radius: 999px;
-      cursor: pointer;
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      transition: all 0.3s var(--ease-smooth);
-      will-change: transform, background-color;
-    }
-
-    .sound-toggle-btn:hover {
-      background: rgba(16, 185, 129, 0.2);
-      border-color: var(--emerald-glow);
-      transform: translateY(-1px);
+      color: var(--acm-blue);
     }
 
     /* Hero Section */
     .hero-split {
       display: grid;
-      grid-template-columns: 1.15fr 0.85fr;
+      grid-template-columns: 1.1fr 0.9fr;
       align-items: center;
-      min-height: calc(88vh - 80px);
-      padding: 40px 0 60px;
-      gap: 20px;
-      position: relative;
+      padding: 80px 0 100px;
+      gap: 40px;
+      min-height: calc(90vh - 80px);
     }
 
     .hero-content {
-      z-index: 3;
-    }
-
-    .hero-logo-box {
-      width: 120px;
-      height: 120px;
-      margin-bottom: 28px;
-      background: radial-gradient(circle, #0e3820 0%, #030e07 100%);
-      border: 1px solid var(--card-border);
-      border-radius: 26px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      box-shadow: 0 20px 50px rgba(16, 185, 129, 0.25), 0 0 25px rgba(16, 185, 129, 0.18) inset;
-      animation: floatLogo 5s ease-in-out infinite;
-      will-change: transform, box-shadow;
-      transform: translateZ(0);
-    }
-
-    .hero-logo-box span {
-      font-family: 'Fira Code', monospace;
-      font-size: 2.1rem;
-      font-weight: 700;
-      color: #ffffff;
-      letter-spacing: -1px;
-      text-shadow: 0 2px 12px rgba(0, 0, 0, 0.6), 0 0 15px rgba(255, 255, 255, 0.4);
-    }
-
-    @keyframes floatLogo {
-      0%, 100% {
-        transform: translateY(0) translateZ(0);
-        box-shadow: 0 20px 50px rgba(16, 185, 129, 0.25), 0 0 25px rgba(16, 185, 129, 0.18) inset;
-      }
-      50% {
-        transform: translateY(-10px) translateZ(0);
-        box-shadow: 0 30px 60px rgba(16, 185, 129, 0.4), 0 0 30px rgba(16, 185, 129, 0.25) inset;
-      }
+      max-width: 600px;
     }
 
     .chapter-tag {
       display: inline-flex;
       align-items: center;
       gap: 8px;
-      font-family: 'Fira Code', monospace;
-      font-size: 0.82rem;
-      color: var(--emerald-glow);
-      background: rgba(16, 185, 129, 0.08);
-      border: 1px solid rgba(16, 185, 129, 0.28);
-      padding: 6px 15px;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-weight: 600;
+      font-size: 0.85rem;
+      color: var(--acm-blue-dark);
+      background: var(--acm-blue-light);
+      border: 1px solid rgba(44, 95, 133, 0.15);
+      padding: 6px 14px;
       border-radius: 999px;
-      margin-bottom: 20px;
+      margin-bottom: 24px;
       text-transform: uppercase;
-      letter-spacing: 1px;
+      letter-spacing: 0.5px;
     }
 
-    .tag-dot {
-      width: 7px;
-      height: 7px;
-      background: var(--emerald-glow);
-      border-radius: 50%;
-      box-shadow: 0 0 8px var(--emerald-glow);
-      animation: pulse 2.2s infinite ease-in-out;
-    }
-
-    @keyframes pulse {
-      0%, 100% { transform: scale(1); opacity: 0.9; }
-      50% { transform: scale(1.35); opacity: 0.4; }
-    }
-
-    /* Hero Title with Typing Cursor Fix for Mobile */
     .hero-title {
-      font-size: 3.6rem;
+      font-size: 3.8rem;
       font-weight: 800;
-      line-height: 1.12;
-      margin-bottom: 22px;
-      letter-spacing: -1px;
-      min-height: 4.2rem;
+      line-height: 1.1;
+      margin-bottom: 12px;
+      color: var(--text-main);
+      letter-spacing: -1.5px;
+    }
+
+    /* Typing Subtitle Styling */
+    .hero-subtitle {
+      font-size: 1.65rem;
+      font-weight: 600;
+      margin-bottom: 24px;
+      min-height: 4.8rem;
     }
 
     .typing-text {
-      background: linear-gradient(180deg, #ffffff 50%, #94a3b8 100%);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
+      color: var(--acm-gold);
       display: inline;
     }
 
@@ -270,9 +207,8 @@
       display: inline-block;
       width: 4px;
       height: 0.95em;
-      background-color: var(--emerald-glow);
+      background-color: var(--acm-gold);
       margin-left: 4px;
-      box-shadow: 0 0 14px var(--emerald-glow);
       animation: blinkCursor 0.9s cubic-bezier(0.4, 0, 0.2, 1) infinite;
       vertical-align: text-bottom;
       border-radius: 2px;
@@ -284,11 +220,10 @@
     }
 
     .hero-desc {
-      font-size: 1.12rem;
+      font-size: 1.15rem;
       color: var(--text-muted);
-      max-width: 600px;
-      margin-bottom: 34px;
-      line-height: 1.75;
+      margin-bottom: 40px;
+      line-height: 1.7;
     }
 
     .btn-group {
@@ -298,193 +233,235 @@
     }
 
     .btn {
-      padding: 13px 30px;
-      border-radius: 12px;
+      padding: 14px 32px;
+      border-radius: 10px;
       font-weight: 600;
-      font-size: 0.95rem;
+      font-size: 1rem;
       cursor: pointer;
       text-decoration: none;
-      transition: transform 0.3s var(--ease-smooth), box-shadow 0.3s var(--ease-smooth), background-color 0.3s ease;
+      transition: all 0.3s var(--ease-smooth);
       display: inline-flex;
       align-items: center;
-      will-change: transform;
     }
 
     .btn-primary {
-      background: var(--emerald-glow);
-      color: #02140b;
-      box-shadow: 0 0 25px rgba(16, 185, 129, 0.35);
-      border: none;
+      background: var(--acm-blue);
+      color: #ffffff;
+      border: 1px solid var(--acm-blue);
+      box-shadow: 0 4px 14px 0 rgba(44, 95, 133, 0.25);
     }
 
     .btn-primary:hover {
-      background: #34d399;
+      background: var(--acm-blue-dark);
+      border-color: var(--acm-blue-dark);
       transform: translateY(-2px);
-      box-shadow: 0 0 35px rgba(16, 185, 129, 0.55);
+      box-shadow: 0 6px 20px 0 rgba(44, 95, 133, 0.35);
     }
 
     .btn-secondary {
-      background: rgba(255, 255, 255, 0.03);
+      background: var(--bg-white);
       color: var(--text-main);
-      border: 1px solid var(--card-border);
+      border: 1px solid var(--border-light);
+      box-shadow: var(--shadow-sm);
     }
 
     .btn-secondary:hover {
-      background: rgba(255, 255, 255, 0.08);
-      border-color: rgba(255, 255, 255, 0.25);
-      transform: translateY(-1px);
+      border-color: #cbd5e1;
+      background: #f1f5f9;
+      transform: translateY(-2px);
     }
 
-    /* 3D Robot Container */
-    .hero-3d-wrapper {
-      position: relative;
+    /* CSS Professional Code Editor Mockup */
+    .hero-graphic {
       width: 100%;
-      height: 520px;
       display: flex;
-      align-items: center;
-      justify-content: center;
+      justify-content: flex-end;
     }
 
-    #webgl-canvas {
+    .code-window {
       width: 100%;
-      height: 100%;
-      outline: none;
-      cursor: pointer;
-      /* Removed touch-action: none to allow smooth scrolling */
+      max-width: 520px;
+      background: #0f172a;
+      border-radius: 12px;
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+      overflow: hidden;
+      transform: perspective(1000px) rotateY(-5deg) rotateX(5deg);
+      transition: transform 0.5s var(--ease-smooth);
     }
+
+    .code-window:hover {
+      transform: perspective(1000px) rotateY(0deg) rotateX(0deg) translateY(-5px);
+    }
+
+    .code-header {
+      background: #1e293b;
+      padding: 14px 20px;
+      display: flex;
+      gap: 8px;
+      align-items: center;
+    }
+
+    .dot { width: 12px; height: 12px; border-radius: 50%; }
+    .dot-red { background: #ef4444; }
+    .dot-yel { background: #eab308; }
+    .dot-grn { background: #22c55e; }
+
+    .code-body {
+      padding: 24px;
+      font-family: 'Fira Code', monospace;
+      font-size: 0.9rem;
+      line-height: 1.7;
+      color: #94a3b8;
+    }
+
+    .code-line { margin-bottom: 4px; display: block; }
+    .c-keyword { color: #c678dd; } 
+    .c-class { color: #e5c07b; }   
+    .c-func { color: #61afef; }    
+    .c-string { color: #98c379; }  
+    .c-comment { color: #64748b; font-style: italic; }
 
     /* Section Title */
     .section-title {
       text-align: center;
-      font-size: 2.3rem;
-      font-weight: 700;
-      margin: 90px 0 48px;
-      color: #fff;
+      font-size: 2.5rem;
+      font-weight: 800;
+      margin: 60px 0 50px;
+      color: var(--text-main);
+      letter-spacing: -0.5px;
     }
 
     .section-title span {
-      color: var(--emerald-glow);
+      color: var(--acm-gold);
     }
 
     /* Teams Grid */
     .grid {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-      gap: 26px;
-      margin-bottom: 110px;
+      gap: 30px;
+      margin-bottom: 100px;
     }
 
+    /* Centered Team Card Layout */
     .team-card {
-      background: var(--card-bg);
-      border: 1px solid var(--card-border);
-      border-radius: 20px;
-      padding: 32px;
-      backdrop-filter: blur(14px);
-      -webkit-backdrop-filter: blur(14px);
-      transition: transform 0.4s var(--ease-smooth), border-color 0.4s var(--ease-smooth), background-color 0.4s ease, box-shadow 0.4s ease;
+      background: var(--bg-white);
+      border: 1px solid var(--border-light);
+      border-radius: 16px;
+      padding: 36px 28px;
+      box-shadow: var(--shadow-sm);
+      transition: all 0.3s var(--ease-smooth);
       display: flex;
       flex-direction: column;
+      align-items: center;
+      text-align: center;
       position: relative;
-      overflow: hidden;
-      will-change: transform;
-      transform: translateZ(0);
     }
 
     .team-card::before {
       content: '';
       position: absolute;
-      top: 0; left: 0; right: 0; height: 3px;
-      background: linear-gradient(90deg, transparent, var(--emerald-glow), transparent);
+      top: 0; left: 0; right: 0; height: 4px;
+      background: var(--acm-blue);
+      border-radius: 16px 16px 0 0;
       opacity: 0;
-      transition: opacity 0.4s var(--ease-smooth);
+      transition: opacity 0.3s ease;
     }
 
     .team-card:hover {
-      border-color: var(--card-hover-border);
-      background: rgba(12, 28, 19, 0.75);
-      transform: translateY(-6px) translateZ(0);
-      box-shadow: 0 16px 36px rgba(0, 0, 0, 0.35);
+      transform: translateY(-6px);
+      box-shadow: var(--shadow-lg);
+      border-color: #cbd5e1;
     }
 
     .team-card:hover::before {
       opacity: 1;
     }
 
-    .team-header {
+    /* High-Res Inventory Item Slot */
+    .item-slot {
+      width: 80px;
+      height: 80px;
+      background: linear-gradient(135deg, var(--acm-blue-light) 0%, var(--bg-white) 100%);
+      border: 2px solid var(--border-light);
+      border-radius: 18px;
       display: flex;
-      justify-content: space-between;
       align-items: center;
-      margin-bottom: 18px;
+      justify-content: center;
+      margin-bottom: 24px;
+      box-shadow: inset 0 2px 4px rgba(0,0,0,0.02), 0 4px 10px rgba(44, 95, 133, 0.08);
+      position: relative;
+      transition: transform 0.4s var(--ease-smooth), box-shadow 0.4s var(--ease-smooth), border-color 0.4s ease;
+    }
+
+    .item-slot svg {
+      width: 50px;
+      height: 50px;
+      transition: transform 0.4s var(--ease-smooth);
+    }
+
+    .team-card:hover .item-slot {
+      transform: translateY(-6px) scale(1.05);
+      box-shadow: inset 0 2px 4px rgba(0,0,0,0.05), 0 12px 24px rgba(196, 155, 87, 0.25);
+      border-color: var(--acm-gold);
+    }
+
+    .team-card:hover .item-slot svg {
+      transform: scale(1.15);
+    }
+
+    .team-tag-wrapper {
+      margin-bottom: 12px;
     }
 
     .team-code {
       font-family: 'Fira Code', monospace;
-      font-size: 0.92rem;
-      color: var(--emerald-glow);
-      background: rgba(16, 185, 129, 0.08);
-      padding: 4px 10px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: var(--acm-blue-dark);
+      background: var(--acm-blue-light);
+      padding: 6px 12px;
       border-radius: 6px;
-      border: 1px solid rgba(16, 185, 129, 0.25);
+      display: inline-block;
     }
 
     .team-card h3 {
-      font-size: 1.35rem;
-      margin-bottom: 10px;
-      color: #fff;
+      font-size: 1.5rem;
+      font-weight: 700;
+      margin-bottom: 16px;
+      color: var(--text-main);
     }
 
     .team-card p {
-      font-size: 0.94rem;
+      font-size: 1.05rem;
       color: var(--text-muted);
       line-height: 1.65;
-      margin-bottom: 20px;
-      flex-grow: 1;
-    }
-
-    .highlights {
-      list-style: none;
-      border-top: 1px solid rgba(255, 255, 255, 0.07);
-      padding-top: 16px;
-    }
-
-    .highlights li {
-      font-size: 0.86rem;
-      color: #cbd5e1;
-      margin-bottom: 8px;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-
-    .highlights li::before {
-      content: "›";
-      color: var(--emerald-glow);
-      font-weight: bold;
-      font-size: 1.15rem;
-      line-height: 1;
+      margin-bottom: 0;
     }
 
     /* Footer */
     footer {
-      border-top: 1px solid rgba(255, 255, 255, 0.06);
-      padding: 45px 0;
+      background: #0f172a;
+      color: #94a3b8;
+      padding: 40px 0;
       text-align: center;
-      color: var(--text-muted);
-      font-size: 0.9rem;
+      font-size: 0.95rem;
     }
 
     @media (max-width: 992px) {
       .hero-split {
         grid-template-columns: 1fr;
         text-align: center;
-        padding-top: 50px;
+        padding-top: 40px;
       }
-      .hero-logo-box { margin: 0 auto 28px; }
-      .hero-title { justify-content: center; }
-      .hero-desc { margin: 0 auto 34px; }
+      .hero-content {
+        margin: 0 auto;
+      }
+      .hero-title { font-size: 3rem; }
+      .hero-subtitle { font-size: 1.3rem; }
       .btn-group { justify-content: center; }
-      .hero-3d-wrapper { height: 400px; }
-      .hero-title { font-size: 2.8rem; }
+      .hero-graphic { justify-content: center; margin-top: 20px; }
+      .code-window { transform: none; }
       .nav-links { display: none; }
     }
   </style>
@@ -497,41 +474,35 @@
   <header>
     <div class="container nav-wrapper">
       <a href="#" class="brand-group">
-        <div class="logo-badge">&lt;acm&gt;</div>
+        <div class="logo-badge">
+          <span class="logo-bracket">{</span><span class="logo-text">acm</span><span class="logo-bracket">}</span>
+        </div>
         <div class="brand-divider"></div>
         <div class="brand-title">IU ACM STUDENT CHAPTER</div>
       </a>
-      <div class="nav-right">
-        <button id="sound-btn" class="sound-toggle-btn" title="Toggle Sound FX">
-          <span id="sound-icon">🔊</span>
-          <span id="sound-text">Sound: ON</span>
-        </button>
-        <nav class="nav-links">
-          <a href="#teams">Teams</a>
-          <a href="#about">About</a>
-          <a href="#join">Get Involved</a>
-        </nav>
-      </div>
+      <nav class="nav-links">
+        <a href="#teams">Teams</a>
+        <a href="#about">About</a>
+        <a href="#join">Get Involved</a>
+      </nav>
     </div>
   </header>
 
   <main class="container">
     <!-- Hero Section -->
     <section class="hero-split" id="about">
+      
+      <!-- Text Content -->
       <div class="hero-content">
-        <div class="hero-logo-box">
-          <span>&lt;acm&gt;</span>
-        </div>
+        <div class="chapter-tag">Official Student Chapter</div>
 
-        <div class="chapter-tag">
-          <div class="tag-dot"></div>
-          Official Student Chapter
-        </div>
+        <!-- Static Main Title -->
+        <h1 class="hero-title">IU ACM Student Chapter</h1>
 
-        <!-- Animated Typing Title (Fixed for Mobile Wrapping) -->
-        <h1 class="hero-title">
+        <!-- Animated Typing Subtitle -->
+        <div class="hero-subtitle">
           <span class="typing-text" id="typing-heading"></span><span class="cursor-wrapper"><span id="last-char"></span><span class="typing-cursor"></span></span>
-        </h1>
+        </div>
 
         <p class="hero-desc">
           Welcome to the official website of the Islamic University of Madinah ACM Student Chapter:
@@ -545,9 +516,33 @@
         </div>
       </div>
 
-      <!-- 3D Interactive Cyber-Robot Canvas -->
-      <div class="hero-3d-wrapper">
-        <canvas id="webgl-canvas"></canvas>
+      <!-- Professional Code Editor Graphic -->
+      <div class="hero-graphic">
+        <div class="code-window">
+          <div class="code-header">
+            <div class="dot dot-red"></div>
+            <div class="dot dot-yel"></div>
+            <div class="dot dot-grn"></div>
+          </div>
+          <div class="code-body">
+            <span class="code-line"><span class="c-comment">// Initialize Chapter Instance</span></span>
+            <span class="code-line"><span class="c-keyword">import</span> { <span class="c-class">Innovation</span>, <span class="c-class">Community</span> } <span class="c-keyword">from</span> <span class="c-string">'@iu/cs'</span>;</span>
+            <br>
+            <span class="code-line"><span class="c-keyword">class</span> <span class="c-class">ACMChapter</span> <span class="c-keyword">extends</span> <span class="c-class">Community</span> {</span>
+            <span class="code-line">&nbsp;&nbsp;<span class="c-func">constructor</span>() {</span>
+            <span class="code-line">&nbsp;&nbsp;&nbsp;&nbsp;<span class="c-keyword">super</span>();</span>
+            <span class="code-line">&nbsp;&nbsp;&nbsp;&nbsp;<span class="c-keyword">this</span>.university = <span class="c-string">'Madinah'</span>;</span>
+            <span class="code-line">&nbsp;&nbsp;&nbsp;&nbsp;<span class="c-keyword">this</span>.mission = <span class="c-string">'Build the future'</span>;</span>
+            <span class="code-line">&nbsp;&nbsp;}</span>
+            <br>
+            <span class="code-line">&nbsp;&nbsp;<span class="c-func">join</span>(<span class="c-keyword">student</span>) {</span>
+            <span class="code-line">&nbsp;&nbsp;&nbsp;&nbsp;<span class="c-keyword">if</span> (student.isCurious) {</span>
+            <span class="code-line">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="c-keyword">return</span> <span class="c-class">Innovation</span>.<span class="c-func">start</span>();</span>
+            <span class="code-line">&nbsp;&nbsp;&nbsp;&nbsp;}</span>
+            <span class="code-line">&nbsp;&nbsp;}</span>
+            <span class="code-line">}</span>
+          </div>
+        </div>
       </div>
     </section>
 
@@ -557,86 +552,100 @@
     <div class="grid">
       <!-- 1. CP Team -->
       <div class="team-card">
-        <div class="team-header">
+        <div class="item-slot" title="Puzzle of Logic">
+          <!-- Puzzle & Code SVG -->
+          <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+            <path d="M 25 25 H 40 A 10 10 0 1 1 60 25 H 75 V 40 A 10 10 0 1 0 75 60 V 75 H 60 A 10 10 0 1 1 40 75 H 25 V 60 A 10 10 0 1 0 25 40 Z" fill="var(--acm-blue-light)" stroke="var(--acm-blue)" stroke-width="6" stroke-linejoin="round" />
+            <path d="M 45 40 L 35 50 L 45 60 M 55 40 L 65 50 L 55 60" fill="none" stroke="var(--acm-gold)" stroke-width="6" stroke-linecap="round" stroke-linejoin="round" />
+          </svg>
+        </div>
+        <div class="team-tag-wrapper">
           <span class="team-code">&lt;CP_Team /&gt;</span>
         </div>
         <h3>Competitive Programming</h3>
         <p>Mastering algorithms, data structures, and rigorous problem-solving to excel in collegiate contests and competitive coding platforms.</p>
-        <ul class="highlights">
-          <li>Weekly algorithmic problem-solving sessions</li>
-          <li>Contest simulations & peer code coaching</li>
-          <li>ICPC & collegiate competition tracks</li>
-        </ul>
       </div>
 
       <!-- 2. AI Team -->
       <div class="team-card">
-        <div class="team-header">
+        <div class="item-slot" title="Sparks of Intelligence">
+          <!-- AI Sparkle Cluster SVG -->
+          <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+            <path d="M 50 15 C 50 40 40 50 15 50 C 40 50 50 60 50 85 C 50 60 60 50 85 50 C 60 50 50 40 50 15 Z" fill="var(--acm-gold)" />
+            <path d="M 80 15 C 80 25 75 30 65 30 C 75 30 80 35 80 45 C 80 35 85 30 95 30 C 85 30 80 25 80 15 Z" fill="var(--acm-blue)" />
+            <path d="M 25 65 C 25 72 22 75 15 75 C 22 75 25 78 25 85 C 25 78 28 75 35 75 C 28 75 25 72 25 65 Z" fill="var(--acm-blue)" />
+          </svg>
+        </div>
+        <div class="team-tag-wrapper">
           <span class="team-code">&lt;AI_Team /&gt;</span>
         </div>
         <h3>Artificial Intelligence</h3>
         <p>Exploring machine learning theory, modern deep learning architectures, and collaborative data science projects.</p>
-        <ul class="highlights">
-          <li>Applied ML/DL workshops and seminars</li>
-          <li>Research paper analysis & discussions</li>
-          <li>Hackathons & benchmark challenges</li>
-        </ul>
       </div>
 
       <!-- 3. Robotics Team -->
       <div class="team-card">
-        <div class="team-header">
+        <div class="item-slot" title="Automated Constructor">
+          <!-- Robot Arm with Grey Gear (Matches Photo Exactly) -->
+          <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+            <path d="M 50 10 A 40 40 0 1 0 85 70" fill="none" stroke="#94a3b8" stroke-width="8" stroke-linecap="round" />
+            <path d="M 50 10 L 50 0 M 30 15 L 23 7 M 15 30 L 7 23 M 10 50 L 0 50 M 15 70 L 7 77 M 30 85 L 23 93 M 50 90 L 50 100 M 70 85 L 77 93 M 85 70 L 95 77" stroke="#94a3b8" stroke-width="6" stroke-linecap="round" />
+            <path d="M 30 90 Q 50 70 70 90 Z" fill="var(--acm-blue-dark)" />
+            <line x1="50" y1="80" x2="35" y2="45" stroke="var(--acm-blue)" stroke-width="12" stroke-linecap="round" />
+            <line x1="50" y1="80" x2="35" y2="45" stroke="var(--acm-blue-light)" stroke-width="4" stroke-linecap="round" />
+            <circle cx="35" cy="45" r="10" fill="var(--acm-blue-dark)" />
+            <circle cx="35" cy="45" r="5" fill="var(--acm-blue-light)" />
+            <line x1="35" y1="45" x2="65" y2="35" stroke="var(--acm-blue)" stroke-width="10" stroke-linecap="round" />
+            <line x1="35" y1="45" x2="65" y2="35" stroke="var(--acm-blue-light)" stroke-width="3" stroke-linecap="round" />
+            <circle cx="65" cy="35" r="7" fill="var(--acm-blue-dark)" />
+            <path d="M 65 35 L 80 25 L 80 15 M 65 35 L 85 35 L 90 45" fill="none" stroke="var(--acm-blue-dark)" stroke-width="6" stroke-linecap="round" stroke-linejoin="round" />
+          </svg>
+        </div>
+        <div class="team-tag-wrapper">
           <span class="team-code">&lt;Robotics_Team /&gt;</span>
         </div>
         <h3>Robotics</h3>
         <p>Bridging software logic with physical systems through microcontrollers, sensor arrays, and embedded hardware development.</p>
-        <ul class="highlights">
-          <li>Microcontroller labs (ESP32, Arduino, Raspberry Pi)</li>
-          <li>Sensor integration and motor control circuits</li>
-          <li>Hardware prototyping for engineering challenges</li>
-        </ul>
       </div>
 
       <!-- 4. Design Team -->
       <div class="team-card">
-        <div class="team-header">
+        <div class="item-slot" title="Artisan's Palette">
+          <!-- Artisan Palette SVG -->
+          <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+            <path d="M 50 90 C 20 90 10 70 10 50 C 10 25 30 10 50 10 C 75 10 90 25 90 45 C 90 55 80 65 70 65 C 60 65 65 75 60 85 C 57 90 53 90 50 90 Z" fill="var(--acm-blue-light)" stroke="var(--acm-blue)" stroke-width="6" stroke-linejoin="round" />
+            <circle cx="30" cy="40" r="8" fill="var(--acm-gold)" />
+            <circle cx="45" cy="25" r="8" fill="var(--acm-blue)" />
+            <circle cx="65" cy="35" r="8" fill="var(--acm-blue-dark)" />
+            <path d="M 75 95 L 95 75 L 60 40 L 40 60 Z" fill="var(--bg-white)" stroke="var(--acm-blue)" stroke-width="4" stroke-linejoin="round" />
+            <path d="M 95 75 Q 105 85 85 100 Q 75 100 75 95 Z" fill="var(--acm-gold)" stroke="var(--acm-blue)" stroke-width="4" stroke-linejoin="round" />
+          </svg>
+        </div>
+        <div class="team-tag-wrapper">
           <span class="team-code">&lt;Design_Team /&gt;</span>
         </div>
         <h3>Design</h3>
         <p>Developing chapter visual identity guidelines, event branding materials, and digital UI/UX wireframes.</p>
-        <ul class="highlights">
-          <li>Brand guidelines and promotional asset creation</li>
-          <li>Event poster design and creative typography</li>
-          <li>UI/UX design for chapter platforms</li>
-        </ul>
       </div>
 
       <!-- 5. Media Team -->
       <div class="team-card">
-        <div class="team-header">
+        <div class="item-slot" title="All-Seeing Lens">
+          <!-- Camera Aperture SVG -->
+          <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+            <rect x="10" y="25" width="80" height="55" rx="10" fill="var(--acm-blue-light)" stroke="var(--acm-blue)" stroke-width="6" />
+            <rect x="20" y="35" width="15" height="8" rx="2" fill="var(--acm-gold)" />
+            <path d="M 25 25 V 20 H 35 V 25" fill="var(--acm-blue)" />
+            <circle cx="60" cy="52" r="20" fill="var(--bg-white)" stroke="var(--acm-blue)" stroke-width="6" />
+            <circle cx="60" cy="52" r="10" fill="var(--acm-blue-dark)" />
+            <circle cx="63" cy="49" r="3" fill="var(--bg-white)" />
+          </svg>
+        </div>
+        <div class="team-tag-wrapper">
           <span class="team-code">&lt;Media_Team /&gt;</span>
         </div>
         <h3>Media</h3>
         <p>Documenting activities through photography, video production, technical recaps, and digital outreach.</p>
-        <ul class="highlights">
-          <li>Event photography and post-production video</li>
-          <li>Digital content curation and semester archives</li>
-          <li>Community outreach and announcements</li>
-        </ul>
-      </div>
-
-      <!-- 6. Logistics Team -->
-      <div class="team-card">
-        <div class="team-header">
-          <span class="team-code">&lt;Logistics_Team /&gt;</span>
-        </div>
-        <h3>Logistics & Operations</h3>
-        <p>Coordinating campus event logistics, lab setups, auditorium bookings, and attendee check-ins.</p>
-        <ul class="highlights">
-          <li>Lab and campus venue reservations</li>
-          <li>Event check-in and attendance management</li>
-          <li>Operational workflows and equipment setups</li>
-        </ul>
       </div>
     </div>
   </main>
@@ -647,29 +656,36 @@
     </div>
   </footer>
 
-  <!-- Typing Animation (Mobile Fixed) -->
+  <!-- Rotating Subtitle Typing Animation -->
   <script>
-    const fullText = "IU ACM Student Chapter";
+    const phrases = [
+      "Build the future.",
+      "Where creativity and professionalism meet.",
+      "Driven by curiosity, passion, and our love for technology."
+    ];
+    
+    let phraseIndex = 0;
     const mainTextEl = document.getElementById("typing-heading");
     const lastCharEl = document.getElementById("last-char");
 
     function typeWriterCycle() {
       let charIndex = 0;
+      let currentPhrase = phrases[phraseIndex];
 
       function typeChar() {
-        if (charIndex <= fullText.length) {
-          // Separate the last character from the main string to keep it bundled with the cursor
+        if (charIndex <= currentPhrase.length) {
           if (charIndex > 0) {
-            mainTextEl.textContent = fullText.slice(0, charIndex - 1);
-            lastCharEl.textContent = fullText.charAt(charIndex - 1);
+            mainTextEl.textContent = currentPhrase.slice(0, charIndex - 1);
+            lastCharEl.textContent = currentPhrase.charAt(charIndex - 1);
           } else {
             mainTextEl.textContent = "";
             lastCharEl.textContent = "";
           }
           charIndex++;
-          setTimeout(typeChar, 70);
+          setTimeout(typeChar, 65);
         } else {
-          setTimeout(backspaceChar, 11500);
+          // Pause reading time: wait ~10 seconds so total cycle is about 15s per phrase
+          setTimeout(backspaceChar, 10500); 
         }
       }
 
@@ -677,15 +693,17 @@
         if (charIndex > 0) {
           charIndex--;
           if (charIndex > 0) {
-            mainTextEl.textContent = fullText.slice(0, charIndex - 1);
-            lastCharEl.textContent = fullText.charAt(charIndex - 1);
+            mainTextEl.textContent = currentPhrase.slice(0, charIndex - 1);
+            lastCharEl.textContent = currentPhrase.charAt(charIndex - 1);
           } else {
             mainTextEl.textContent = "";
             lastCharEl.textContent = "";
           }
-          setTimeout(backspaceChar, 30);
+          setTimeout(backspaceChar, 25);
         } else {
-          setTimeout(typeWriterCycle, 1200);
+          // Move to next phrase
+          phraseIndex = (phraseIndex + 1) % phrases.length;
+          setTimeout(typeWriterCycle, 1000);
         }
       }
 
@@ -693,373 +711,8 @@
     }
 
     window.addEventListener("DOMContentLoaded", () => {
-      setTimeout(typeWriterCycle, 300);
+      setTimeout(typeWriterCycle, 600);
     });
-  </script>
-
-  <!-- Complete Audio Engine (Global Unlocker + Voice Consistency) -->
-  <script>
-    let soundEnabled = true;
-    let audioCtx = null;
-    let visorRef = null;
-    let isSpeaking = false;
-    let audioUnlocked = false;
-
-    let ambientSource = null;
-    let ambientGain = null;
-
-    function getAudioContext() {
-      if (!audioCtx) {
-        const AudioCtx = window.AudioContext || window.webkitAudioContext;
-        audioCtx = new AudioCtx();
-      }
-      if (audioCtx.state === 'suspended') {
-        audioCtx.resume();
-      }
-      return audioCtx;
-    }
-
-    // --- Global Audio Engine Unlocker (Fix for iOS/Android First Touch Block) ---
-    function unlockAudioEngines() {
-      if (audioUnlocked || !soundEnabled) return;
-      audioUnlocked = true;
-
-      getAudioContext().resume();
-      
-      // Fire a silent speech utterance to authorize Web Speech API instantly
-      if ('speechSynthesis' in window) {
-        const silentSpeech = new SpeechSynthesisUtterance("");
-        silentSpeech.volume = 0;
-        window.speechSynthesis.speak(silentSpeech);
-      }
-
-      document.removeEventListener('touchstart', unlockAudioEngines);
-      document.removeEventListener('click', unlockAudioEngines);
-    }
-
-    document.addEventListener('touchstart', unlockAudioEngines, { passive: true });
-    document.addEventListener('click', unlockAudioEngines);
-
-    // --- Procedural Airflow ---
-    function createAirflowBuffer(ctx) {
-      const bufferSize = ctx.sampleRate * 4;
-      const buffer = ctx.createBuffer(1, bufferSize, ctx.sampleRate);
-      const data = buffer.getChannelData(0);
-      let lastOut = 0.0;
-
-      for (let i = 0; i < bufferSize; i++) {
-        const white = Math.random() * 2 - 1;
-        data[i] = (lastOut + (0.02 * white)) / 1.02;
-        lastOut = data[i];
-        data[i] *= 3.5;
-      }
-      return buffer;
-    }
-
-    function startAirflowAmbience() {
-      if (!soundEnabled || ambientSource) return;
-      const ctx = getAudioContext();
-
-      ambientSource = ctx.createBufferSource();
-      ambientSource.buffer = createAirflowBuffer(ctx);
-      ambientSource.loop = true;
-
-      const filter = ctx.createBiquadFilter();
-      filter.type = 'lowpass';
-      filter.frequency.setValueAtTime(380, ctx.currentTime);
-      filter.Q.setValueAtTime(1.0, ctx.currentTime);
-
-      ambientGain = ctx.createGain();
-      ambientGain.gain.setValueAtTime(0.001, ctx.currentTime);
-      ambientGain.gain.exponentialRampToValueAtTime(0.25, ctx.currentTime + 1.2);
-
-      ambientSource.connect(filter);
-      filter.connect(ambientGain);
-      ambientGain.connect(ctx.destination);
-
-      ambientSource.start();
-    }
-
-    function stopAirflowAmbience() {
-      if (ambientGain && audioCtx) {
-        ambientGain.gain.setTargetAtTime(0.0001, audioCtx.currentTime, 0.15);
-      }
-      setTimeout(() => {
-        if (ambientSource) {
-          try { ambientSource.stop(); } catch(e) {}
-          try { ambientSource.disconnect(); } catch(e) {}
-          ambientSource = null;
-          ambientGain = null;
-        }
-      }, 200);
-    }
-
-    const soundBtn = document.getElementById('sound-btn');
-    const soundIcon = document.getElementById('sound-icon');
-    const soundText = document.getElementById('sound-text');
-
-    soundBtn.addEventListener('click', () => {
-      soundEnabled = !soundEnabled;
-      if (soundEnabled) {
-        audioUnlocked = true;
-        getAudioContext().resume();
-        soundIcon.textContent = '🔊';
-        soundText.textContent = 'Sound: ON';
-        startAirflowAmbience();
-        speakRoboticWelcome();
-      } else {
-        if ('speechSynthesis' in window) {
-          window.speechSynthesis.cancel();
-        }
-        stopAirflowAmbience();
-        soundIcon.textContent = '🔇';
-        soundText.textContent = 'Sound: OFF';
-      }
-    });
-
-    function playSciFiChime() {
-      const ctx = getAudioContext();
-      const ctxNow = ctx.currentTime;
-      const osc = ctx.createOscillator();
-      const gain = ctx.createGain();
-
-      osc.type = 'sawtooth';
-      osc.frequency.setValueAtTime(320, ctxNow);
-      osc.frequency.exponentialRampToValueAtTime(960, ctxNow + 0.18);
-
-      gain.gain.setValueAtTime(0.08, ctxNow);
-      gain.gain.exponentialRampToValueAtTime(0.001, ctxNow + 0.22);
-
-      osc.connect(gain);
-      gain.connect(ctx.destination);
-
-      osc.start(ctxNow);
-      osc.stop(ctxNow + 0.23);
-    }
-
-    function speakRoboticWelcome() {
-      if (!soundEnabled || !('speechSynthesis' in window)) return;
-      window.speechSynthesis.cancel();
-
-      const speechPhrase = "Welcome to I-U A-C-M Student Chapter. If you are creative, you are in the right place.";
-      const utterance = new SpeechSynthesisUtterance(speechPhrase);
-      
-      utterance.pitch = 0.22;
-      utterance.rate = 0.88;
-
-      // Aggressive Voice Targeting for Consistency across Windows/Mac/iOS/Android
-      const voices = window.speechSynthesis.getVoices();
-      const targetVoices = [
-        'Fred',                    // Mac/iOS (Deep Robotic)
-        'Zarvox',                  // Mac/iOS Alternate
-        'Google UK English Male',  // Android/Chrome
-        'Microsoft Mark',          // Windows
-        'Microsoft David',         // Windows Alternate
-        'Daniel',                  // iOS fallback
-        'Male'
-      ];
-      
-      let selectedVoice = voices.find(v => targetVoices.some(tv => v.name.includes(tv)));
-      if (!selectedVoice) selectedVoice = voices.find(v => v.lang.startsWith('en'));
-      if (selectedVoice) utterance.voice = selectedVoice;
-
-      let pulseTimer = null;
-      utterance.onstart = () => {
-        isSpeaking = true;
-        playSciFiChime();
-        if (visorRef) {
-          pulseTimer = setInterval(() => {
-            const cur = visorRef.color.getHex();
-            visorRef.color.setHex(cur === 0x34d399 ? 0xffffff : 0x34d399);
-          }, 90);
-        }
-      };
-
-      utterance.onend = utterance.onerror = () => {
-        isSpeaking = false;
-        if (pulseTimer) clearInterval(pulseTimer);
-        if (visorRef) visorRef.color.setHex(0x34d399);
-      };
-
-      window.speechSynthesis.speak(utterance);
-    }
-  </script>
-
-  <!-- Three.js 3D Cyber-Robot Simulation -->
-  <script>
-    const canvas = document.getElementById('webgl-canvas');
-    const wrapper = canvas.parentElement;
-
-    const scene = new THREE.Scene();
-    const camera = new THREE.PerspectiveCamera(45, wrapper.clientWidth / wrapper.clientHeight, 0.1, 1000);
-    camera.position.set(0, 0.5, 9);
-
-    const renderer = new THREE.WebGLRenderer({ canvas: canvas, alpha: true, antialias: true, powerPreference: "high-performance" });
-    renderer.setSize(wrapper.clientWidth, wrapper.clientHeight);
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-
-    const ambientLight = new THREE.AmbientLight(0xffffff, 0.55);
-    scene.add(ambientLight);
-
-    const emeraldLight = new THREE.PointLight(0x10b981, 4, 60);
-    emeraldLight.position.set(4, 5, 4);
-    scene.add(emeraldLight);
-
-    const rimLight = new THREE.PointLight(0x34d399, 2.5, 50);
-    rimLight.position.set(-5, -3, -3);
-    scene.add(rimLight);
-
-    const robot = new THREE.Group();
-    scene.add(robot);
-
-    const darkChassisMat = new THREE.MeshStandardMaterial({
-      color: 0x09140d,
-      metalness: 0.85,
-      roughness: 0.25,
-      flatShading: true
-    });
-
-    const emeraldArmorMat = new THREE.MeshStandardMaterial({
-      color: 0x044327,
-      metalness: 0.75,
-      roughness: 0.3,
-      flatShading: true
-    });
-
-    const glowingVisorMat = new THREE.MeshBasicMaterial({
-      color: 0x34d399
-    });
-    visorRef = glowingVisorMat;
-
-    const wireMat = new THREE.MeshBasicMaterial({
-      color: 0x10b981,
-      wireframe: true,
-      transparent: true,
-      opacity: 0.35
-    });
-
-    const headGeo = new THREE.BoxGeometry(2.0, 1.7, 1.8);
-    const head = new THREE.Mesh(headGeo, darkChassisMat);
-    robot.add(head);
-
-    const headWire = new THREE.Mesh(headGeo, wireMat);
-    headWire.scale.set(1.02, 1.02, 1.02);
-    head.add(headWire);
-
-    const visorGeo = new THREE.BoxGeometry(1.6, 0.45, 0.4);
-    const visor = new THREE.Mesh(visorGeo, glowingVisorMat);
-    visor.position.set(0, 0.15, 0.85);
-    head.add(visor);
-
-    const earGeo = new THREE.CylinderGeometry(0.35, 0.35, 0.3, 16);
-    const leftEar = new THREE.Mesh(earGeo, emeraldArmorMat);
-    leftEar.rotation.z = Math.PI / 2;
-    leftEar.position.set(-1.1, 0.15, 0);
-    head.add(leftEar);
-
-    const rightEar = leftEar.clone();
-    rightEar.position.x = 1.1;
-    head.add(rightEar);
-
-    const antennaStem = new THREE.Mesh(new THREE.CylinderGeometry(0.05, 0.05, 0.6, 8), darkChassisMat);
-    antennaStem.position.set(0, 1.1, 0);
-    head.add(antennaStem);
-
-    const antennaBeacon = new THREE.Mesh(new THREE.SphereGeometry(0.16, 16, 16), glowingVisorMat);
-    antennaBeacon.position.set(0, 1.4, 0);
-    head.add(antennaBeacon);
-
-    const ringGeo = new THREE.TorusGeometry(2.2, 0.08, 16, 64);
-    const orbitalRing = new THREE.Mesh(ringGeo, emeraldArmorMat);
-    orbitalRing.rotation.x = Math.PI / 3;
-    robot.add(orbitalRing);
-
-    const ringGeo2 = new THREE.TorusGeometry(2.8, 0.05, 16, 64);
-    const outerRing = new THREE.Mesh(ringGeo2, wireMat);
-    outerRing.rotation.x = -Math.PI / 4;
-    robot.add(outerRing);
-
-    const nodeGeo = new THREE.OctahedronGeometry(0.4);
-    const sat1 = new THREE.Mesh(nodeGeo, emeraldArmorMat);
-    sat1.position.set(2.4, 1.6, -0.5);
-    robot.add(sat1);
-
-    const sat2 = new THREE.Mesh(nodeGeo, darkChassisMat);
-    sat2.position.set(-2.5, -1.2, 0.5);
-    robot.add(sat2);
-
-    let mouseX = 0, mouseY = 0;
-    let targetX = 0, targetY = 0;
-
-    window.addEventListener('mousemove', (e) => {
-      const rect = canvas.getBoundingClientRect();
-      const x = e.clientX - rect.left - rect.width / 2;
-      const y = e.clientY - rect.top - rect.height / 2;
-      targetX = (x / rect.width) * 0.85;
-      targetY = (y / rect.height) * 0.85;
-    });
-
-    window.addEventListener('mouseleave', () => {
-      targetX = 0;
-      targetY = 0;
-    });
-
-    // Touch / Click on Robot (Fixed missing e.preventDefault() allowing scrolling)
-    function onRobotTouched(e) {
-      // Force unlock if not already done
-      if (!audioUnlocked && soundEnabled) {
-        unlockAudioEngines();
-      }
-      
-      startAirflowAmbience();
-      
-      if(!isSpeaking) {
-        speakRoboticWelcome();
-      }
-    }
-
-    canvas.addEventListener('click', onRobotTouched);
-    // Added { passive: true } so swiping down the page over the canvas isn't blocked
-    canvas.addEventListener('touchstart', onRobotTouched, { passive: true });
-
-    window.addEventListener('resize', () => {
-      const width = wrapper.clientWidth;
-      const height = wrapper.clientHeight;
-      camera.aspect = width / height;
-      camera.updateProjectionMatrix();
-      renderer.setSize(width, height);
-    });
-
-    let clock = new THREE.Clock();
-
-    function animate() {
-      requestAnimationFrame(animate);
-      const elapsedTime = clock.getElapsedTime();
-
-      mouseX += (targetX - mouseX) * 0.028;
-      mouseY += (targetY - mouseY) * 0.028;
-
-      head.rotation.y = mouseX * 1.1 + Math.sin(elapsedTime * 0.75) * 0.06;
-      head.rotation.x = mouseY * 0.75 + Math.cos(elapsedTime * 0.85) * 0.04;
-
-      robot.position.y = Math.sin(elapsedTime * 1.3) * 0.18;
-
-      orbitalRing.rotation.z = elapsedTime * 0.45;
-      orbitalRing.rotation.x = Math.PI / 3 + Math.sin(elapsedTime * 0.35) * 0.12;
-
-      outerRing.rotation.z = -elapsedTime * 0.3;
-      outerRing.rotation.y = elapsedTime * 0.22;
-
-      sat1.rotation.y = elapsedTime * 1.1;
-      sat1.position.y = 1.6 + Math.sin(elapsedTime * 1.8) * 0.14;
-
-      sat2.rotation.x = -elapsedTime * 1.1;
-      sat2.position.y = -1.2 + Math.cos(elapsedTime * 1.8) * 0.14;
-
-      renderer.render(scene, camera);
-    }
-
-    animate();
   </script>
 </body>
 </html>

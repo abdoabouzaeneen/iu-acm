@@ -81,7 +81,7 @@
       backdrop-filter: blur(12px);
       -webkit-backdrop-filter: blur(12px);
       border-bottom: 1px solid var(--border-light);
-      padding: 20px 0;
+      padding: 16px 0;
       position: sticky;
       top: 0;
       z-index: 20;
@@ -132,6 +132,12 @@
       color: var(--text-main);
     }
 
+    /* Updated Navigation Links Layout */
+    .nav-links {
+      display: flex;
+      align-items: center;
+    }
+
     .nav-links a {
       color: var(--text-muted);
       text-decoration: none;
@@ -143,6 +149,24 @@
 
     .nav-links a:hover {
       color: var(--acm-blue);
+    }
+
+    /* New "Join Us" Navbar Button */
+    .nav-links .btn-nav-join {
+      background-color: var(--acm-blue-dark);
+      color: var(--acm-gold);
+      padding: 10px 20px;
+      border-radius: 8px;
+      margin-left: 28px;
+      transition: all 0.3s var(--ease-smooth);
+      box-shadow: 0 2px 6px rgba(30, 69, 99, 0.15);
+    }
+
+    .nav-links .btn-nav-join:hover {
+      background-color: var(--acm-blue);
+      color: var(--acm-gold-light);
+      transform: translateY(-2px);
+      box-shadow: 0 6px 14px rgba(30, 69, 99, 0.25);
     }
 
     /* Hero Section */
@@ -193,7 +217,7 @@
       min-height: 4.8rem;
     }
 
-    .typing-text {
+    .typing-text, #last-char {
       color: var(--acm-gold);
       display: inline;
     }
@@ -478,12 +502,14 @@
           <span class="logo-bracket">{</span><span class="logo-text">acm</span><span class="logo-bracket">}</span>
         </div>
         <div class="brand-divider"></div>
-        <div class="brand-title">IU ACM STUDENT CHAPTER</div>
+        <div class="brand-title">ISLAMIC UNIVERSITY OF MADINAH STUDENT CHAPTER</div>
       </a>
       <nav class="nav-links">
-        <a href="#teams">Teams</a>
         <a href="#about">About</a>
-        <a href="#join">Get Involved</a>
+        <a href="#contact">Contact</a>
+        <a href="#leadership">Leadership</a>
+        <a href="#events">Events</a>
+        <a href="#join" class="btn-nav-join">Join Us</a>
       </nav>
     </div>
   </header>
@@ -650,7 +676,7 @@
     </div>
   </main>
 
-  <footer id="join">
+  <footer id="contact">
     <div class="container">
       <p>© 2026 IU ACM Student Chapter. All rights reserved.</p>
     </div>

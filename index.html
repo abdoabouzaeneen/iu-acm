@@ -365,13 +365,66 @@
       text-align: center;
       font-size: 2.5rem;
       font-weight: 800;
-      margin: 60px 0 50px;
+      margin: 60px 0 20px;
       color: var(--text-main);
       letter-spacing: -0.5px;
     }
 
-    .section-title span {
-      color: var(--acm-gold);
+    /* Teams vs Committees Toggle UI */
+    .toggle-wrapper {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      margin-bottom: 50px;
+    }
+
+    .toggle-container {
+      background: var(--border-light);
+      padding: 4px;
+      border-radius: 999px;
+      display: inline-flex;
+      box-shadow: inset 0 2px 4px rgba(0,0,0,0.05);
+    }
+
+    .toggle-btn {
+      background: transparent;
+      border: none;
+      padding: 10px 24px;
+      border-radius: 999px;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-weight: 700;
+      font-size: 0.95rem;
+      color: var(--text-muted);
+      cursor: pointer;
+      transition: all 0.3s var(--ease-smooth);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .toggle-btn.active {
+      background: var(--text-main);
+      color: var(--bg-white);
+      box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    }
+
+    .toggle-btn .count {
+      background: rgba(0,0,0,0.08);
+      padding: 2px 10px;
+      border-radius: 999px;
+      font-size: 0.8rem;
+      color: inherit;
+    }
+
+    .toggle-btn.active .count {
+      background: rgba(255,255,255,0.2);
+    }
+
+    .toggle-desc {
+      margin-top: 16px;
+      font-size: 0.95rem;
+      color: var(--text-muted);
+      text-align: center;
     }
 
     /* Teams Grid */
@@ -380,6 +433,11 @@
       grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
       gap: 30px;
       margin-bottom: 100px;
+    }
+
+    /* Hidden state for switching tabs */
+    .grid.hidden {
+      display: none !important;
     }
 
     /* Centered Team Card Layout */
@@ -417,13 +475,12 @@
       opacity: 1;
     }
 
-    /* High-Res Inventory Item Slot */
     .item-slot {
-      width: 80px;
-      height: 80px;
+      width: 110px;
+      height: 110px;
       background: linear-gradient(135deg, var(--acm-blue-light) 0%, var(--bg-white) 100%);
       border: 2px solid var(--border-light);
-      border-radius: 18px;
+      border-radius: 24px;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -434,8 +491,16 @@
     }
 
     .item-slot svg {
-      width: 50px;
-      height: 50px;
+      width: 65px;
+      height: 65px;
+      transition: transform 0.4s var(--ease-smooth);
+    }
+
+    .item-slot img {
+      width: 95px; 
+      height: 95px;
+      object-fit: contain;
+      mix-blend-mode: multiply; 
       transition: transform 0.4s var(--ease-smooth);
     }
 
@@ -445,7 +510,8 @@
       border-color: var(--acm-gold);
     }
 
-    .team-card:hover .item-slot svg {
+    .team-card:hover .item-slot svg,
+    .team-card:hover .item-slot img {
       transform: scale(1.15);
     }
 
@@ -478,6 +544,139 @@
       margin-bottom: 0;
     }
 
+    /* ---------------------------------
+       UP NEXT (EVENTS CAROUSEL) SECTION
+       --------------------------------- */
+    .events-section {
+      padding: 20px 0 80px;
+    }
+
+    .carousel-wrapper {
+      width: 100%;
+      overflow: hidden;
+      position: relative;
+      padding: 20px 0;
+    }
+
+    /* Gradient edges to fade the cards as they scroll in and out */
+    .carousel-wrapper::before,
+    .carousel-wrapper::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      width: 100px;
+      height: 100%;
+      z-index: 5;
+      pointer-events: none;
+    }
+    .carousel-wrapper::before {
+      left: 0;
+      background: linear-gradient(to right, var(--bg-body), transparent);
+    }
+    .carousel-wrapper::after {
+      right: 0;
+      background: linear-gradient(to left, var(--bg-body), transparent);
+    }
+
+    /* Track that holds the cards. 
+       Animating from -50% to 0 moves the cards from Left to Right. */
+    .carousel-track {
+      display: flex;
+      gap: 30px;
+      width: max-content;
+      animation: scrollLeftToRight 30s linear infinite;
+    }
+
+    /* Pauses the carousel if the user hovers over an event */
+    .carousel-track:hover {
+      animation-play-state: paused;
+    }
+
+    @keyframes scrollLeftToRight {
+      0% { transform: translateX(-50%); }
+      100% { transform: translateX(0); }
+    }
+
+    .event-card {
+      width: 320px;
+      background: var(--bg-white);
+      border: 1px solid var(--border-light);
+      border-radius: 16px;
+      overflow: hidden;
+      box-shadow: var(--shadow-sm);
+      flex-shrink: 0;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      cursor: pointer;
+    }
+
+    .event-card:hover {
+      transform: translateY(-5px);
+      box-shadow: var(--shadow-lg);
+      border-color: var(--acm-blue);
+    }
+
+    /* "SOON" Image Placeholder */
+    .event-img-soon {
+      height: 180px;
+      background: linear-gradient(135deg, var(--acm-blue-light) 0%, var(--border-light) 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-weight: 800;
+      font-size: 2.5rem;
+      color: rgba(44, 95, 133, 0.2); /* Faint watermark-like text */
+      letter-spacing: 4px;
+      border-bottom: 1px solid var(--border-light);
+      position: relative;
+    }
+
+    /* A small graphical flair inside the placeholder */
+    .event-img-soon::after {
+      content: '{ SOON }';
+      position: absolute;
+      font-size: 1.2rem;
+      color: var(--acm-blue);
+      letter-spacing: 1px;
+      background: var(--bg-white);
+      padding: 6px 16px;
+      border-radius: 999px;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+    }
+
+    .event-info {
+      padding: 24px;
+    }
+
+    .event-date {
+      font-family: 'Fira Code', monospace;
+      font-size: 0.85rem;
+      color: var(--acm-gold-dark);
+      font-weight: 600;
+      margin-bottom: 8px;
+    }
+
+    .event-title {
+      font-size: 1.2rem;
+      font-weight: 700;
+      color: var(--text-main);
+      margin-bottom: 12px;
+      line-height: 1.4;
+    }
+
+    .event-location {
+      font-size: 0.9rem;
+      color: var(--text-muted);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .event-location svg {
+      width: 16px;
+      height: 16px;
+      color: var(--acm-blue);
+    }
+
     /* Footer */
     footer {
       background: #0f172a;
@@ -489,57 +688,22 @@
 
     /* Mobile Responsive Overrides */
     @media (max-width: 992px) {
-      .brand-title {
-        display: none; /* Hide long title on small phones so logo and button fit */
-      }
-      
-      .mobile-menu-btn {
-        display: block; /* Show hamburger icon */
-      }
-
-      /* Transform standard nav into a mobile dropdown */
+      .brand-title { display: none; }
+      .mobile-menu-btn { display: block; }
       .nav-links {
-        position: absolute;
-        top: 100%;
-        left: 0;
-        width: 100%;
+        position: absolute; top: 100%; left: 0; width: 100%;
         background-color: rgba(255, 255, 255, 0.98);
-        backdrop-filter: blur(12px);
-        -webkit-backdrop-filter: blur(12px);
+        backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
         border-bottom: 1px solid var(--border-light);
-        flex-direction: column;
-        padding: 0;
-        overflow: hidden;
-        max-height: 0;
-        transition: max-height 0.4s var(--ease-smooth), padding 0.4s var(--ease-smooth);
+        flex-direction: column; padding: 0; overflow: hidden;
+        max-height: 0; transition: max-height 0.4s var(--ease-smooth), padding 0.4s var(--ease-smooth);
         box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
       }
-
-      /* Class added by JS to open the menu */
-      .nav-links.active {
-        max-height: 400px;
-        padding: 20px 0 30px 0;
-      }
-
-      .nav-links a {
-        margin: 10px 0;
-        font-size: 1.1rem;
-      }
-
-      .nav-links .btn-nav-join {
-        margin: 15px 0 0 0;
-        width: 80%;
-        text-align: center;
-      }
-
-      .hero-split {
-        grid-template-columns: 1fr;
-        text-align: center;
-        padding-top: 40px;
-      }
-      .hero-content {
-        margin: 0 auto;
-      }
+      .nav-links.active { max-height: 400px; padding: 20px 0 30px 0; }
+      .nav-links a { margin: 10px 0; font-size: 1.1rem; }
+      .nav-links .btn-nav-join { margin: 15px 0 0 0; width: 80%; text-align: center; }
+      .hero-split { grid-template-columns: 1fr; text-align: center; padding-top: 40px; }
+      .hero-content { margin: 0 auto; }
       .hero-title { font-size: 3rem; }
       .hero-subtitle { font-size: 1.3rem; }
       .btn-group { justify-content: center; }
@@ -574,9 +738,9 @@
 
       <nav class="nav-links" id="navLinks">
         <a href="#about">About</a>
-        <a href="#contact">Contact</a>
-        <a href="#leadership">Leadership</a>
+        <a href="#groups">Groups</a>
         <a href="#events">Events</a>
+        <a href="#contact">Contact</a>
         <a href="#join" class="btn-nav-join">Join Us</a>
       </nav>
     </div>
@@ -586,11 +750,8 @@
     <!-- Hero Section -->
     <section class="hero-split" id="about">
       
-      <!-- Text Content -->
       <div class="hero-content">
         <div class="chapter-tag">Official Student Chapter</div>
-
-        <!-- Static Main Title -->
         <h1 class="hero-title">IU ACM Student Chapter</h1>
 
         <!-- Animated Typing Subtitle -->
@@ -605,8 +766,8 @@
           skill levels to join our community and share our love for technology.
         </p>
         <div class="btn-group">
-          <a href="#teams" class="btn btn-primary">Explore Our Teams</a>
-          <a href="#join" class="btn btn-secondary">Join Community</a>
+          <a href="#groups" class="btn btn-primary">Explore Our Teams</a>
+          <a href="#events" class="btn btn-secondary">Upcoming Events</a>
         </div>
       </div>
 
@@ -640,18 +801,23 @@
       </div>
     </section>
 
-    <!-- Chapter Teams Section -->
-    <h2 class="section-title" id="teams">Chapter <span>Teams</span></h2>
+    <!-- Chapter Groups Section -->
+    <h2 class="section-title" id="groups">Our <span>Groups</span></h2>
 
-    <div class="grid">
-      <!-- 1. CP Team -->
+    <!-- UIUC Style Toggle Switch -->
+    <div class="toggle-wrapper">
+      <div class="toggle-container">
+        <button class="toggle-btn active" id="btn-teams">Teams <span class="count">3</span></button>
+        <button class="toggle-btn" id="btn-committees">Committees <span class="count">4</span></button>
+      </div>
+      <p class="toggle-desc" id="toggle-desc">Teams focus on specific, highly technical areas of computer science and engineering.</p>
+    </div>
+
+    <!-- 1. TEAMS GRID (Visible by default) -->
+    <div class="grid" id="grid-teams">
       <div class="team-card">
-        <div class="item-slot" title="Puzzle of Logic">
-          <!-- Puzzle & Code SVG -->
-          <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
-            <path d="M 25 25 H 40 A 10 10 0 1 1 60 25 H 75 V 40 A 10 10 0 1 0 75 60 V 75 H 60 A 10 10 0 1 1 40 75 H 25 V 60 A 10 10 0 1 0 25 40 Z" fill="var(--acm-blue-light)" stroke="var(--acm-blue)" stroke-width="6" stroke-linejoin="round" />
-            <path d="M 45 40 L 35 50 L 45 60 M 55 40 L 65 50 L 55 60" fill="none" stroke="var(--acm-gold)" stroke-width="6" stroke-linecap="round" stroke-linejoin="round" />
-          </svg>
+        <div class="item-slot" title="Competitive Programming Logo">
+          <img src="CP_team_logo.png" alt="CP Team Logo" />
         </div>
         <div class="team-tag-wrapper">
           <span class="team-code">&lt;CP_Team /&gt;</span>
@@ -660,15 +826,9 @@
         <p>Mastering algorithms, data structures, and rigorous problem-solving to excel in collegiate contests and competitive coding platforms.</p>
       </div>
 
-      <!-- 2. AI Team -->
       <div class="team-card">
-        <div class="item-slot" title="Sparks of Intelligence">
-          <!-- AI Sparkle Cluster SVG -->
-          <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
-            <path d="M 50 15 C 50 40 40 50 15 50 C 40 50 50 60 50 85 C 50 60 60 50 85 50 C 60 50 50 40 50 15 Z" fill="var(--acm-gold)" />
-            <path d="M 80 15 C 80 25 75 30 65 30 C 75 30 80 35 80 45 C 80 35 85 30 95 30 C 85 30 80 25 80 15 Z" fill="var(--acm-blue)" />
-            <path d="M 25 65 C 25 72 22 75 15 75 C 22 75 25 78 25 85 C 25 78 28 75 35 75 C 28 75 25 72 25 65 Z" fill="var(--acm-blue)" />
-          </svg>
+        <div class="item-slot" title="Artificial Intelligence Logo">
+          <img src="AI_team_logos.png" alt="AI Team Logo" />
         </div>
         <div class="team-tag-wrapper">
           <span class="team-code">&lt;AI_Team /&gt;</span>
@@ -677,23 +837,9 @@
         <p>Exploring machine learning theory, modern deep learning architectures, and collaborative data science projects.</p>
       </div>
 
-      <!-- 3. Robotics Team -->
       <div class="team-card">
-        <div class="item-slot" title="Automated Constructor">
-          <!-- Robot Arm with Grey Gear (Matches Photo Exactly) -->
-          <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
-            <path d="M 50 10 A 40 40 0 1 0 85 70" fill="none" stroke="#94a3b8" stroke-width="8" stroke-linecap="round" />
-            <path d="M 50 10 L 50 0 M 30 15 L 23 7 M 15 30 L 7 23 M 10 50 L 0 50 M 15 70 L 7 77 M 30 85 L 23 93 M 50 90 L 50 100 M 70 85 L 77 93 M 85 70 L 95 77" stroke="#94a3b8" stroke-width="6" stroke-linecap="round" />
-            <path d="M 30 90 Q 50 70 70 90 Z" fill="var(--acm-blue-dark)" />
-            <line x1="50" y1="80" x2="35" y2="45" stroke="var(--acm-blue)" stroke-width="12" stroke-linecap="round" />
-            <line x1="50" y1="80" x2="35" y2="45" stroke="var(--acm-blue-light)" stroke-width="4" stroke-linecap="round" />
-            <circle cx="35" cy="45" r="10" fill="var(--acm-blue-dark)" />
-            <circle cx="35" cy="45" r="5" fill="var(--acm-blue-light)" />
-            <line x1="35" y1="45" x2="65" y2="35" stroke="var(--acm-blue)" stroke-width="10" stroke-linecap="round" />
-            <line x1="35" y1="45" x2="65" y2="35" stroke="var(--acm-blue-light)" stroke-width="3" stroke-linecap="round" />
-            <circle cx="65" cy="35" r="7" fill="var(--acm-blue-dark)" />
-            <path d="M 65 35 L 80 25 L 80 15 M 65 35 L 85 35 L 90 45" fill="none" stroke="var(--acm-blue-dark)" stroke-width="6" stroke-linecap="round" stroke-linejoin="round" />
-          </svg>
+        <div class="item-slot" title="Robotics Team Logo">
+          <img src="robotics_team_logo.png" alt="Robotics Team Logo" />
         </div>
         <div class="team-tag-wrapper">
           <span class="team-code">&lt;Robotics_Team /&gt;</span>
@@ -701,11 +847,63 @@
         <h3>Robotics</h3>
         <p>Bridging software logic with physical systems through microcontrollers, sensor arrays, and embedded hardware development.</p>
       </div>
+    </div>
 
-      <!-- 4. Design Team -->
+    <!-- 2. COMMITTEES GRID (Hidden by default) -->
+    <div class="grid hidden" id="grid-committees">
       <div class="team-card">
-        <div class="item-slot" title="Artisan's Palette">
-          <!-- Artisan Palette SVG -->
+        <div class="item-slot" title="Administration & Leadership">
+          <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+            <path d="M 20 80 H 80 M 30 80 V 40 M 50 80 V 40 M 70 80 V 40" fill="none" stroke="var(--acm-blue)" stroke-width="6" stroke-linecap="round" />
+            <path d="M 10 40 L 50 20 L 90 40 Z" fill="var(--acm-blue-light)" stroke="var(--acm-blue)" stroke-width="6" stroke-linejoin="round" />
+            <circle cx="50" cy="55" r="8" fill="var(--acm-gold)" />
+          </svg>
+        </div>
+        <div class="team-tag-wrapper">
+          <span class="team-code">Executive_Board</span>
+        </div>
+        <h3>Executive Board</h3>
+        <p>The core leadership team responsible for strategic decision-making, official university correspondence, and overall chapter management.</p>
+      </div>
+
+      <div class="team-card">
+        <div class="item-slot" title="Guidance & Strategy">
+          <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="50" cy="50" r="35" fill="var(--acm-blue-light)" stroke="var(--acm-blue)" stroke-width="6" />
+            <circle cx="50" cy="50" r="25" fill="none" stroke="var(--border-light)" stroke-width="2" stroke-dasharray="4 4" />
+            <path d="M 50 25 L 60 50 L 50 75 L 40 50 Z" fill="var(--acm-gold)" stroke="var(--acm-blue)" stroke-width="4" stroke-linejoin="round" />
+            <path d="M 50 50 L 60 50 L 50 75 Z" fill="var(--acm-blue-dark)" />
+            <circle cx="50" cy="50" r="4" fill="var(--bg-white)" />
+          </svg>
+        </div>
+        <div class="team-tag-wrapper">
+          <span class="team-code">Advisory_Mentorship</span>
+        </div>
+        <h3>Advisory & Mentorship</h3>
+        <p>A board of industry professionals, alumni, and senior students bridging the gap between academia and industry demands.</p>
+      </div>
+
+      <div class="team-card">
+        <div class="item-slot" title="Systems & Architecture">
+          <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+            <rect x="25" y="20" width="50" height="15" rx="4" fill="var(--bg-white)" stroke="var(--acm-blue)" stroke-width="6" />
+            <rect x="25" y="45" width="50" height="15" rx="4" fill="var(--acm-blue-light)" stroke="var(--acm-blue)" stroke-width="6" />
+            <rect x="25" y="70" width="50" height="15" rx="4" fill="var(--bg-white)" stroke="var(--acm-blue)" stroke-width="6" />
+            <circle cx="35" cy="27.5" r="3" fill="var(--acm-gold)" />
+            <circle cx="35" cy="52.5" r="3" fill="var(--acm-blue-dark)" />
+            <circle cx="35" cy="77.5" r="3" fill="var(--acm-gold)" />
+            <path d="M 60 27.5 H 65 M 60 52.5 H 65 M 60 77.5 H 65" stroke="var(--acm-blue)" stroke-width="3" stroke-linecap="round" />
+          </svg>
+        </div>
+        <div class="team-tag-wrapper">
+          <span class="team-code">IT_Infrastructure</span>
+        </div>
+        <h3>IT & Infrastructure</h3>
+        <p>Responsible for developing, operating, and maintaining the chapter's technical infrastructure, including internal systems and the official website.</p>
+      </div>
+
+      <div class="team-card">
+        <div class="item-slot" title="Brand & Outreach">
           <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
             <path d="M 50 90 C 20 90 10 70 10 50 C 10 25 30 10 50 10 C 75 10 90 25 90 45 C 90 55 80 65 70 65 C 60 65 65 75 60 85 C 57 90 53 90 50 90 Z" fill="var(--acm-blue-light)" stroke="var(--acm-blue)" stroke-width="6" stroke-linejoin="round" />
             <circle cx="30" cy="40" r="8" fill="var(--acm-gold)" />
@@ -716,32 +914,122 @@
           </svg>
         </div>
         <div class="team-tag-wrapper">
-          <span class="team-code">&lt;Design_Team /&gt;</span>
+          <span class="team-code">Media_Design</span>
         </div>
-        <h3>Design</h3>
-        <p>Developing chapter visual identity guidelines, event branding materials, and digital UI/UX wireframes.</p>
-      </div>
-
-      <!-- 5. Media Team -->
-      <div class="team-card">
-        <div class="item-slot" title="All-Seeing Lens">
-          <!-- Camera Aperture SVG -->
-          <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
-            <rect x="10" y="25" width="80" height="55" rx="10" fill="var(--acm-blue-light)" stroke="var(--acm-blue)" stroke-width="6" />
-            <rect x="20" y="35" width="15" height="8" rx="2" fill="var(--acm-gold)" />
-            <path d="M 25 25 V 20 H 35 V 25" fill="var(--acm-blue)" />
-            <circle cx="60" cy="52" r="20" fill="var(--bg-white)" stroke="var(--acm-blue)" stroke-width="6" />
-            <circle cx="60" cy="52" r="10" fill="var(--acm-blue-dark)" />
-            <circle cx="63" cy="49" r="3" fill="var(--bg-white)" />
-          </svg>
-        </div>
-        <div class="team-tag-wrapper">
-          <span class="team-code">&lt;Media_Team /&gt;</span>
-        </div>
-        <h3>Media</h3>
-        <p>Documenting activities through photography, video production, technical recaps, and digital outreach.</p>
+        <h3>Media & Design</h3>
+        <p>Tasked with developing the chapter's visual identity, managing social media, and documenting events, workshops, and activities.</p>
       </div>
     </div>
+    
+    <!-- 3. UPCOMING EVENTS SCROLLING CAROUSEL -->
+    <section class="events-section" id="events">
+      <h2 class="section-title">Up <span>Next</span></h2>
+      
+      <div class="carousel-wrapper">
+        <div class="carousel-track">
+          
+          <!-- SET 1 (4 Cards) -->
+          <div class="event-card">
+            <div class="event-img-soon"></div>
+            <div class="event-info">
+              <div class="event-date">TBA - FALL SEMESTER</div>
+              <h3 class="event-title">Intro to Competitive Programming</h3>
+              <div class="event-location">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
+                <span>CS Department Labs</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="event-card">
+            <div class="event-img-soon"></div>
+            <div class="event-info">
+              <div class="event-date">TBA - FALL SEMESTER</div>
+              <h3 class="event-title">Machine Learning Kickoff</h3>
+              <div class="event-location">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
+                <span>IU Main Auditorium</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="event-card">
+            <div class="event-img-soon"></div>
+            <div class="event-info">
+              <div class="event-date">TBA - FALL SEMESTER</div>
+              <h3 class="event-title">Robotics & Arduino Workshop</h3>
+              <div class="event-location">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
+                <span>Hardware Lab 04</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="event-card">
+            <div class="event-img-soon"></div>
+            <div class="event-info">
+              <div class="event-date">TBA - FALL SEMESTER</div>
+              <h3 class="event-title">Chapter General Assembly</h3>
+              <div class="event-location">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
+                <span>Online (Zoom)</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- SET 2 (Exact Duplicate of Set 1 for the infinite scrolling loop trick to work) -->
+          <div class="event-card">
+            <div class="event-img-soon"></div>
+            <div class="event-info">
+              <div class="event-date">TBA - FALL SEMESTER</div>
+              <h3 class="event-title">Intro to Competitive Programming</h3>
+              <div class="event-location">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
+                <span>CS Department Labs</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="event-card">
+            <div class="event-img-soon"></div>
+            <div class="event-info">
+              <div class="event-date">TBA - FALL SEMESTER</div>
+              <h3 class="event-title">Machine Learning Kickoff</h3>
+              <div class="event-location">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
+                <span>IU Main Auditorium</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="event-card">
+            <div class="event-img-soon"></div>
+            <div class="event-info">
+              <div class="event-date">TBA - FALL SEMESTER</div>
+              <h3 class="event-title">Robotics & Arduino Workshop</h3>
+              <div class="event-location">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
+                <span>Hardware Lab 04</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="event-card">
+            <div class="event-img-soon"></div>
+            <div class="event-info">
+              <div class="event-date">TBA - FALL SEMESTER</div>
+              <h3 class="event-title">Chapter General Assembly</h3>
+              <div class="event-location">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
+                <span>Online (Zoom)</span>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
   </main>
 
   <footer id="contact">
@@ -750,9 +1038,32 @@
     </div>
   </footer>
 
-  <!-- Scripts: Mobile Menu Toggle & Typing Animation -->
+  <!-- Scripts: Toggle Logic & Typing Animation -->
   <script>
-    // 1. Mobile Hamburger Menu Toggle
+    // 1. Teams vs Committees Toggle Logic
+    const btnTeams = document.getElementById('btn-teams');
+    const btnCommittees = document.getElementById('btn-committees');
+    const gridTeams = document.getElementById('grid-teams');
+    const gridCommittees = document.getElementById('grid-committees');
+    const toggleDesc = document.getElementById('toggle-desc');
+
+    btnTeams.addEventListener('click', () => {
+      btnTeams.classList.add('active');
+      btnCommittees.classList.remove('active');
+      gridTeams.classList.remove('hidden');
+      gridCommittees.classList.add('hidden');
+      toggleDesc.textContent = "Teams focus on specific, highly technical areas of computer science and engineering.";
+    });
+
+    btnCommittees.addEventListener('click', () => {
+      btnCommittees.classList.add('active');
+      btnTeams.classList.remove('active');
+      gridCommittees.classList.remove('hidden');
+      gridTeams.classList.add('hidden');
+      toggleDesc.textContent = "Committees manage the core operations, infrastructure, strategy, and growth of the chapter.";
+    });
+
+    // 2. Mobile Hamburger Menu Toggle
     const mobileMenuBtn = document.getElementById('mobileMenuBtn');
     const navLinks = document.getElementById('navLinks');
 
@@ -760,15 +1071,13 @@
       navLinks.classList.toggle('active');
     });
 
-    // Close mobile menu when a link is clicked
     document.querySelectorAll('.nav-links a').forEach(link => {
       link.addEventListener('click', () => {
         navLinks.classList.remove('active');
       });
     });
 
-
-    // 2. Rotating Subtitle Typing Animation
+    // 3. Rotating Subtitle Typing Animation
     const phrases = [
       "Build the future.",
       "Where creativity and professionalism meet.",
@@ -795,7 +1104,6 @@
           charIndex++;
           setTimeout(typeChar, 65);
         } else {
-          // Pause reading time: wait ~10 seconds so total cycle is about 15s per phrase
           setTimeout(backspaceChar, 10500); 
         }
       }
@@ -812,7 +1120,6 @@
           }
           setTimeout(backspaceChar, 25);
         } else {
-          // Move to next phrase
           phraseIndex = (phraseIndex + 1) % phrases.length;
           setTimeout(typeWriterCycle, 1000);
         }
